@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Arunabha Majumdar, Tanushree Haldar, John Witte" />
+
+<meta name="date" content="2017-01-23" />
+
+<title>CPBayes (Bayesian meta analysis for studying cross-phenotype genetic associations) package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">CPBayes (Bayesian meta analysis for studying cross-phenotype genetic associations) package</h1>
+<h4 class="author"><em>Arunabha Majumdar, Tanushree Haldar, John Witte</em></h4>
+<h4 class="date"><em>2017-01-23</em></h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Simultaneous analysis of genetic associations with multiple phenotypes may reveal shared genetic susceptibility across traits (pleiotropy). CPBayes is a Bayesian meta analysis approach for studying cross-phenotype genetic associations. It uses summary-level data across multiple phenotypes to simultaneously measure the evidence of aggregate-level pleiotropic association and estimate an optimal subset of traits associated with the risk locus. CPBayes is based on a spike and slab prior and is implemented by Markov chain Monte Carlo (MCMC) technique Gibbs sampling.</p>
+<p>This R-package consists of four main functions:</p>
+<ol style="list-style-type: decimal">
+<li>cpbayes_uncor: This function implements CPBayes for uncorrelated summary statistics. The summary statistics across traits/studies are uncorrelated when the studies have no overlapping subject.</li>
+<li>cpbayes_cor: This function implements CPBayes for correlated summary statistics. The summary statistics across traits/studies are correlated when the studies have overlapping subjects or the phenotypes were measured in a cohort study.</li>
+<li>post_summaries: This function summarizes the MCMC data produced by the two main functions cpbayes_uncor or cpbayes_cor listed above. It computes additional summaries to provide a better insight into a pleiotropic signal. It works in the same way for both cpbayes_uncor and cpbayes_cor.</li>
+<li>estimate_corln: This function computes an approximate correlation matrix of the beta-hat vector for multiple overlapping case-control studies or a cohort study using the sample-overlap matrices.</li>
+</ol>
+</div>
+<div id="installation" class="section level1">
+<h1>Installation</h1>
+<p>You can install CPBayes from CRAN.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;CPBayes&quot;</span>)
+<span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)</code></pre></div>
+</div>
+<div id="an-example-demonstrating-how-to-run-cpbayes-for-uncorrelated-summary-statistics." class="section level1">
+<h1>An example demonstrating how to run CPBayes for uncorrelated summary statistics.</h1>
+<p>Get the path to the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)
+<span class="co"># Load the beta hat vector</span>
+BetaHatfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;BetaHat.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
+<span class="kw">load</span>(BetaHatfile)
+BetaHat
+##  [1]  0.03402285 -0.01987781 -0.01088476 -0.00940975  0.02195188
+##  [6] -0.01728955  0.14180403  0.06979527 -0.11721340 -0.09231879</code></pre></div>
+<p>BetaHat contains an example data of the main genetic effect (beta/log(odds ratio)) estimates for a single nucleotide polymorphism (SNP) obtained from 10 separate case-control studies for 10 different diseases. In each case-control study comprising a distinct set of 7000 cases and 10000 controls, we fit a logistic regression of the case-control status on the genotype coded as the minor allele count for all the individuals in the sample. One can also include various covariates, such as, age, gender, principal components (PCs) of ancestries in the logistic regression. From each logistic regression for a disease, we obtain the estimate of the main genetic association parameter (beta/log(odds ratio)) along with the corresponding standard error. Since the studies do not have any overlapping subject, beta-hat across the diseases are uncorrelated.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the standard error vector</span>
+SEfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SE.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
+<span class="kw">load</span>(SEfile)
+SE
+##  [1] 0.02736746 0.02741876 0.02749038 0.02747637 0.02749800 0.02753650
+##  [7] 0.02731022 0.02714103 0.02786046 0.02783711</code></pre></div>
+<p>SE contains the standard errors corresponding to the above beta hat vector across 10 separate case-control studies.</p>
+<p>Next we specify the name of the diseases/phenotypes and the genetic variant.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Specify the name of the traits and the genetic variant.</span>
+traitNames &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Disease&quot;</span>, <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+SNP1 &lt;-<span class="st"> &quot;rs1234&quot;</span>
+traitNames
+##  [1] &quot;Disease1&quot;  &quot;Disease2&quot;  &quot;Disease3&quot;  &quot;Disease4&quot;  &quot;Disease5&quot; 
+##  [6] &quot;Disease6&quot;  &quot;Disease7&quot;  &quot;Disease8&quot;  &quot;Disease9&quot;  &quot;Disease10&quot;
+SNP1
+## [1] &quot;rs1234&quot;</code></pre></div>
+<p>Now we implement CPBayes for this example data. Since the studies are non-overlapping, the summary statistics across traits are uncorrelated. Hence we run the the cpbayes_uncor function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run the uncorrelated version of CPBayes.</span>
+result &lt;-<span class="st"> </span><span class="kw">cpbayes_uncor</span>(BetaHat, SE, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1)
+## log10_BF: 11.39 
+## subset:  Disease7 Disease9 Disease10</code></pre></div>
+<p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_uncor in the CPBayes manual). After running cpbayes_uncor, it prints the log10(Bayes factor) (denoted as log10_BF) and the subset of associated/non-null traits (denoted as subset) produced by CPBayes. The Bayes factor evaluates the overall pleiotropic association and the subset of non-null traits are the most important phenotypes that underlie the pleiotropic signal. However, the printed outputs are only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str function (as shown below).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Overall summary of the primary results produced by cpbayes_uncor.</span>
+<span class="kw">str</span>(result)
+## List of 7
+##  $ variantName     : chr &quot;rs1234&quot;
+##  $ log10_BF        : num 11.4
+##  $ PPNA            : num 3.99e-15
+##  $ subset          : chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;
+##  $ important_traits:'data.frame':    3 obs. of  2 variables:
+##   ..$ traits: chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;
+##   ..$ PPAj  : num [1:3] 1 0.962 0.6
+##  $ auxi_data       :List of 6
+##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ K              : int 10
+##   ..$ mcmc.samplesize: num 10000
+##   ..$ PPAj           : num [1:10] 0.029 0.0191 0.0214 0.0159 0.0232 ...
+##   ..$ Z.data         : num [1:10000, 1:10] 0 0 0 0 0 0 0 0 0 1 ...
+##   ..$ sim.beta       : num [1:10000, 1:10] -0.000319 0.010188 0.012115 -0.003118 0.003075 ...
+##  $ runtime         :Class 'proc_time'  Named num [1:5] 1.695 0.048 1.749 0.002 0.003
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</code></pre></div>
+<p>result$variantName returns the name of the genetic variant specified by the user. Here, it is ‘rs1234’. result$log10_BF provides the log10(Bayes factor) (discussed above). result$PPNA provides the posterior probability of null association which is another measure of the aggregate-level pleiotropic association. result$subset provides the optimal subset of associated/non-null traits selected by CPBayes. Thus, for the example data, CPBayes produced a log10(Bayes factor) of 11.4, PPNA of 3.99*10^(-15), and selected Disease7, Disease9, and Disease10 as associated/non-null. A detailed interpretation of all the outputs are described in the Value section of cpbayes_uncor in the CPBayes manual.</p>
+<p>The post_summaries function provides important insights into an obseved pleiotropic signal, e.g., the direction of associations, posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Post summary of the MCMC data produced by cpbayes_uncor.</span>
+PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  
+<span class="kw">str</span>(PleioSumm)
+## List of 9
+##  $ variantName       : chr &quot;rs1234&quot;
+##  $ log10_BF          : num 11.4
+##  $ PPNA              : num 3.99e-15
+##  $ subset            :'data.frame':  3 obs. of  3 variables:
+##   ..$ traits   : chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;
+##   ..$ PPAj     : num [1:3] 1 0.962 0.6
+##   ..$ direction: chr [1:3] &quot;positive&quot; &quot;negative&quot; &quot;negative&quot;
+##  $ important_traits  :'data.frame':  3 obs. of  3 variables:
+##   ..$ traits   : chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;
+##   ..$ PPAj     : num [1:3] 1 0.962 0.6
+##   ..$ direction: chr [1:3] &quot;positive&quot; &quot;negative&quot; &quot;negative&quot;
+##  $ traitNames        : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##  $ PPAj              :'data.frame':  10 obs. of  2 variables:
+##   ..$ traits: chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ PPAj  : num [1:10] 0.029 0.0191 0.0214 0.0159 0.0232 ...
+##  $ poste_summary_beta:'data.frame':  10 obs. of  6 variables:
+##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ poste_mean  : num [1:10] 0.00498 -0.00271 -0.00136 -0.00128 0.00278 ...
+##   ..$ poste_median: num [1:10] 0.0043 -0.00237 -0.0012 -0.00124 0.00259 ...
+##   ..$ poste_se    : num [1:10] 0.0115 0.0103 0.0104 0.0101 0.0104 ...
+##   ..$ lCl         : num [1:10] -0.014 -0.0225 -0.0212 -0.0205 -0.0161 ...
+##   ..$ uCl         : num [1:10] 0.0266 0.0162 0.0177 0.0178 0.0225 ...
+##  $ poste_summary_OR  :'data.frame':  10 obs. of  5 variables:
+##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ poste_mean  : num [1:10] 1.005 0.997 0.999 0.999 1.003 ...
+##   ..$ poste_median: num [1:10] 1.004 0.998 0.999 0.999 1.003 ...
+##   ..$ lCl         : num [1:10] 0.986 0.978 0.979 0.98 0.984 ...
+##   ..$ uCl         : num [1:10] 1.03 1.02 1.02 1.02 1.02 ...</code></pre></div>
+<p>So we have to pass the list ‘result’ returned by cpbayes_uncor as the first argument and the ‘level’ as the second argument into the post_summaries function. If ‘level’ is not specified, the default value is 0.05. Note that post_summaries computes (1-level)% credible interval of the unknown true genetic effect (beta/odds ratio) on each trait. It estimates the direction of association with the important traits, the vector of trait-specific posterior probability of association (PPAj), etc. For detailed description of different outputs provided by this function, please see the Value section of post_summaries in the CPBayes manual.</p>
+</div>
+<div id="an-example-demonstrating-how-to-run-cpbayes-for-correlated-summary-statistics." class="section level1">
+<h1>An example demonstrating how to run CPBayes for correlated summary statistics.</h1>
+<p>Next we demonstrate how to run CPBayes for correlated summary statistics. Get the path to the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the beta-hat vector</span>
+datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cBetaHat.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
+<span class="kw">load</span>(datafile)
+cBetaHat
+##  [1] -0.042216290 -0.035624411 -0.058063641 -0.026037581 -0.014434543
+##  [6] -0.004717336 -0.043771014 -0.025293739  0.059845798 -0.177518725</code></pre></div>
+<p>Here ‘c’ in cBetaHat stands for correlated case. cBetaHat contains an example data of the main genetic association parameter (beta/log(odds ratio)) estimates for a SNP across 10 overlapping case-control studies for 10 different diseases. Each of the 10 studies has a distinct set of 7000 cases and a common set of 10000 controls shared across all the studies. In each case-control study, we fit a logistic regression of the case-control status on the genotype coded as the minor allele count for all the individuals in the sample. One can also include various covariates, such as, age, gender, principal components (PCs) of ancestries in the logistic regression. From each logistic regression for a disease, we obtain the estimate of the main genetic effect (beta/log(odds ratio)) along with the corresponding standard error. Since the studies have overlapping subjects, beta-hat across the diseases are correlated.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the standard error vector</span>
+datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cSE.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
+<span class="kw">load</span>(datafile)
+cSE
+##  [1] 0.02386863 0.02389768 0.02404311 0.02395724 0.02383974 0.02376651
+##  [7] 0.02402079 0.02392416 0.02377087 0.02446383</code></pre></div>
+<p>cSE contains the standard errors corresponding to the above beta hat vector across 10 overlapping case-control studies.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the correlation matrix of the beta-hat vector (cBetaHat)</span>
+datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cor.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
+<span class="kw">load</span>(datafile)
+cor
+##            [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
+##  [1,] 1.0000000 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
+##  [2,] 0.4117647 1.0000000 0.4117647 0.4117647 0.4117647 0.4117647
+##  [3,] 0.4117647 0.4117647 1.0000000 0.4117647 0.4117647 0.4117647
+##  [4,] 0.4117647 0.4117647 0.4117647 1.0000000 0.4117647 0.4117647
+##  [5,] 0.4117647 0.4117647 0.4117647 0.4117647 1.0000000 0.4117647
+##  [6,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 1.0000000
+##  [7,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
+##  [8,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
+##  [9,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
+## [10,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
+##            [,7]      [,8]      [,9]     [,10]
+##  [1,] 0.4117647 0.4117647 0.4117647 0.4117647
+##  [2,] 0.4117647 0.4117647 0.4117647 0.4117647
+##  [3,] 0.4117647 0.4117647 0.4117647 0.4117647
+##  [4,] 0.4117647 0.4117647 0.4117647 0.4117647
+##  [5,] 0.4117647 0.4117647 0.4117647 0.4117647
+##  [6,] 0.4117647 0.4117647 0.4117647 0.4117647
+##  [7,] 1.0000000 0.4117647 0.4117647 0.4117647
+##  [8,] 0.4117647 1.0000000 0.4117647 0.4117647
+##  [9,] 0.4117647 0.4117647 1.0000000 0.4117647
+## [10,] 0.4117647 0.4117647 0.4117647 1.0000000</code></pre></div>
+<p>The correlation matrix of the beta-hat vector (cBetaHat) is given by ‘cor’ which we estimated by employing the estimate_corln function (demonstrated later in this tutorial) using the sample-overlap matrix (explained later in this tutorial). Next we run the correlated version of CPBayes for this example data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run the correlated version of CPBayes.</span>
+result &lt;-<span class="st"> </span><span class="kw">cpbayes_cor</span>(cBetaHat, cSE, cor, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1)
+## log10_BF: 18.87 
+## subset:  Disease9 Disease10</code></pre></div>
+<p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_cor in the CPBayes manual). After running cpbayes_cor, it prints the log10(Bayes factor) (denoted as log10_BF) and the subset of non-null/associated traits (denoted as subset) produced by CPBayes. The Bayes factor evaluates the overall pleiotropic association and the subset of non-null traits are the most important phenotypes that underlie the pleiotropic signal. However, the printed outputs are only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str function (as shown below).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Overall summary of the primary results produced by cpbayes_cor.</span>
+<span class="kw">str</span>(result)
+## List of 8
+##  $ variantName     : chr &quot;rs1234&quot;
+##  $ log10_BF        : num 18.9
+##  $ PPNA            : num 1.31e-22
+##  $ subset          : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
+##  $ important_traits:'data.frame':    2 obs. of  2 variables:
+##   ..$ traits: chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
+##   ..$ PPAj  : num [1:2] 0.91 1
+##  $ auxi_data       :List of 6
+##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ K              : int 10
+##   ..$ mcmc.samplesize: num 10000
+##   ..$ PPAj           : num [1:10] 0.0109 0.0105 0.0369 0.0069 0.0119 ...
+##   ..$ Z.data         : num [1:10000, 1:10] 0 0 0 0 0 0 0 0 0 0 ...
+##   ..$ sim.beta       : num [1:10000, 1:10] -0.00604 -0.01855 0.00852 0.00693 -0.00578 ...
+##  $ uncor_use       : chr &quot;No&quot;
+##  $ runtime         :Class 'proc_time'  Named num [1:5] 4.285 0.086 4.378 0.004 0.004
+##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</code></pre></div>
+<p>result$variantName returns the name of the genetic variant specified by the user. Here, it is ‘rs1234’. result$log10_BF provides the log10(Bayes factor) (discussed above). result$PPNA provides the posterior probability of null association which is another measure of the aggregate-level pleiotropic association. result$subset provides the optimal subset of associated traits selected by CPBayes. Thus, for the example data, CPBayes produced a log10(Bayes factor) of 18.9, PPNA of 1.31*10^(-22), and selected Disease9 and Disease10 as associated/non-null. A detailed interpretation of all the outputs are described in the Value section of cpbayes_cor in the CPBayes manual.</p>
+<p>The post_summaries function provides important insights into an observed pleiotropic signal, e.g., the direction of associations, posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Post summary of the MCMC data produced by cpbayes_cor.</span>
+PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  
+<span class="kw">str</span>(PleioSumm)
+## List of 9
+##  $ variantName       : chr &quot;rs1234&quot;
+##  $ log10_BF          : num 18.9
+##  $ PPNA              : num 1.31e-22
+##  $ subset            :'data.frame':  2 obs. of  3 variables:
+##   ..$ traits   : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
+##   ..$ PPAj     : num [1:2] 0.91 1
+##   ..$ direction: chr [1:2] &quot;positive&quot; &quot;negative&quot;
+##  $ important_traits  :'data.frame':  2 obs. of  3 variables:
+##   ..$ traits   : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
+##   ..$ PPAj     : num [1:2] 0.91 1
+##   ..$ direction: chr [1:2] &quot;positive&quot; &quot;negative&quot;
+##  $ traitNames        : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##  $ PPAj              :'data.frame':  10 obs. of  2 variables:
+##   ..$ traits: chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ PPAj  : num [1:10] 0.0109 0.0105 0.0369 0.0069 0.0119 ...
+##  $ poste_summary_beta:'data.frame':  10 obs. of  6 variables:
+##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ poste_mean  : num [1:10] -0.004227 -0.002783 -0.008707 -0.000548 0.002431 ...
+##   ..$ poste_median: num [1:10] -0.004274 -0.002593 -0.007977 -0.000616 0.002421 ...
+##   ..$ poste_se    : num [1:10] 0.00932 0.00931 0.01096 0.00902 0.00935 ...
+##   ..$ lCl         : num [1:10] -0.0222 -0.021 -0.0326 -0.0182 -0.0157 ...
+##   ..$ uCl         : num [1:10] 0.01351 0.01485 0.00943 0.01721 0.02038 ...
+##  $ poste_summary_OR  :'data.frame':  10 obs. of  5 variables:
+##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
+##   ..$ poste_mean  : num [1:10] 0.996 0.997 0.991 0.999 1.002 ...
+##   ..$ poste_median: num [1:10] 0.996 0.997 0.992 0.999 1.002 ...
+##   ..$ lCl         : num [1:10] 0.978 0.979 0.968 0.982 0.984 ...
+##   ..$ uCl         : num [1:10] 1.01 1.01 1.01 1.02 1.02 ...</code></pre></div>
+<p>post_summaries works exactly in the same way for both cpbayes_cor and cpbayes_uncor. Thus, we need to pass the list ‘result’ returned by cpbayes_cor as the first argument and ‘level’ as the second argument into the post_summaries function. If ‘level’ is not specified, the default value is 0.05. Note that post_summaries computes (1-level)% credible interval for the unknown true genetic effect (beta/odds ratio) on each trait. It provides the direction of the association with the important traits, the vector of trait-specific posterior probability of association (PPAj), etc. For detailed description of different outputs provided by post_summaries, please see the Value section of post_summaries in the CPBayes manual.</p>
+</div>
+<div id="an-example-demonstrating-how-to-run-estimate_corln" class="section level1">
+<h1>An example demonstrating how to run estimate_corln</h1>
+<p>The function estimate_corln estimates the correlation matrix of the beta-hat vector for multiple overlapping case-control studies or a cohort study using the sample-overlap matrices which describe the number of cases or controls shared between studies/traits, and the number of subjects who are case for one study/trait but control for another study/trait.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Example data of sample-overlap matrices</span>
+SampleOverlapMatrixFile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SampleOverlapMatrix.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
+<span class="kw">load</span>(SampleOverlapMatrixFile)
+SampleOverlapMatrix
+## $n11
+##        trait1 trait2 trait3 trait4 trait5
+## trait1   9048   4647   2985   2835   1812
+## trait2   4647  13565   3873   4245   2419
+## trait3   2985   3873  14681   6285   2044
+## trait4   2835   4245   6285  16697   2059
+## trait5   1812   2419   2044   2059   7121
+## 
+## $n00
+##        trait1 trait2 trait3 trait4 trait5
+## trait1  44683  35765  32987  30821  39374
+## trait2  35765  40166  29358  27714  35464
+## trait3  32987  29358  39050  28638  33973
+## trait4  30821  27714  28638  37034  31972
+## trait5  39374  35464  33973  31972  46610
+## 
+## $n10
+##        trait1 trait2 trait3 trait4 trait5
+## trait1      0   4401   6063   6213   7236
+## trait2   8918      0   9692   9320  11146
+## trait3  11696  10808      0   8396  12637
+## trait4  13862  12452  10412      0  14638
+## trait5   5309   4702   5077   5062      0</code></pre></div>
+<p>SampleOverlapMatrix is a list that contains an example of the sample overlap matrices for five different diseases in the Kaiser GERA cohort (a real data). The list constitutes of three matrices as follows. SampleOverlapMatrix$n11 provides the number of cases shared between all possible pairs of studies/traits. SampleOverlapMatrix$n00 provides the number of controls shared between all possible pairs of studies/traits. SampleOverlapMatrix$n10 provides the number of subjects who are case for one study/trait and control for another study/trait. For more detailed explanation, see the Arguments section of estimate_corln in the CPBayes manual.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate the correlation matrix of correlated beta-hat vector</span>
+n11 &lt;-<span class="st"> </span>SampleOverlapMatrix$n11
+n00 &lt;-<span class="st"> </span>SampleOverlapMatrix$n00
+n10 &lt;-<span class="st"> </span>SampleOverlapMatrix$n10
+cor &lt;-<span class="st"> </span><span class="kw">estimate_corln</span>(n11, n00, n10)
+cor
+##             trait1      trait2     trait3       trait4      trait5
+## trait1 1.000000000 0.270490702 0.05723195  0.002505875  0.08989408
+## trait2 0.270490702 1.000000000 0.01601813  0.002744961  0.07849158
+## trait3 0.057231953 0.016018131 1.00000000  0.155476792  0.01211052
+## trait4 0.002505875 0.002744961 0.15547679  1.000000000 -0.01824859
+## trait5 0.089894085 0.078491585 0.01211052 -0.018248589  1.00000000</code></pre></div>
+<p>The function estimate_corln computes an approximate correlation matrix of the correlated beta-hat vector obtained from multiple overlapping case-control studies or a cohort study. Note that for a cohort study, such overlap between cases and controls is natural due to measuring phenotypes on the same group of individuals. This approximation of correlation structure using the sample-overlap matrices is more accurate when none of the diseases/traits is associated with the environmental covariates in the study. While demonstrating cpbayes_cor, we used simulated data for 10 overlapping case-control studies with each study having a distinct set of 7000 cases and a common set of 10000 controls shared across all the studies. We used the estimate_corln function to estimate the correlation matrix of the correlated beta-hat vector using the sample-overlap matrix.</p>
+<p><strong><em>Important note on the estimation of correlation structure of correlated beta-hat vector:</em></strong> In general, environmental covariates are expected to be present in a study and associated with the phenotypes of interest. Hence the above approximation of the correlation matrix may not be completely accurate. So, in presence of environmental covariates, we recommend an alternative strategy to estimate the correlation matrix using the genome-wide summary statistics data across traits as follows. First, extract all the SNPs for each of which the trait-specific univariate association p-value across all the traits are &gt; 0.1. The trait-specific univariate association p-values can be obtained based on the beta-hat and standard error for each trait. Each of the SNPs selected in this way is either weakly or not associated with any of the phenotypes (null SNP). Next, select a set of independent null SNPs from the initial set of null SNPs by using a threshold of r^2 &lt; 0.01 (r: the correlation between the genotypes at a pair of SNPs). Finally, compute the correlation matrix of the effect estimates (beta-hat vector) as the sample correlation matrix of the beta-hat vector across all the selected independent null SNPs. This strategy is more general and applicable to a cohort study or multiple overlapping studies for binary or quantitative traits with arbitrary distributions. Misspecification of the correlation structure can affect the results produced by CPBayes to some extent. Hence, if genome-wide summary statistics data across traits is available, we recommend to use this alternative strategy to estimate the correlation matrix of the beta-hat vector.</p>
+<p>See our paper for more details: Arunabha Majumdar, Tanushree Haldar, Sourabh Bhattacharya, John Witte. An efficient Bayesian meta-analysis approach for studying cross-phenotype genetic associations (submitted). Available at: <a href="http://biorxiv.org/content/early/2017/01/18/101543" class="uri">http://biorxiv.org/content/early/2017/01/18/101543</a>.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
