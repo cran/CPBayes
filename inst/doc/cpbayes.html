@@ -12,7 +12,7 @@
 
 <meta name="author" content="Arunabha Majumdar, Tanushree Haldar, John Witte" />
 
-<meta name="date" content="2017-01-23" />
+<meta name="date" content="2017-04-05" />
 
 <title>CPBayes (Bayesian meta analysis for studying cross-phenotype genetic associations) package</title>
 
@@ -70,19 +70,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">CPBayes (Bayesian meta analysis for studying cross-phenotype genetic associations) package</h1>
 <h4 class="author"><em>Arunabha Majumdar, Tanushree Haldar, John Witte</em></h4>
-<h4 class="date"><em>2017-01-23</em></h4>
+<h4 class="date"><em>2017-04-05</em></h4>
 
 
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Simultaneous analysis of genetic associations with multiple phenotypes may reveal shared genetic susceptibility across traits (pleiotropy). CPBayes is a Bayesian meta analysis approach for studying cross-phenotype genetic associations. It uses summary-level data across multiple phenotypes to simultaneously measure the evidence of aggregate-level pleiotropic association and estimate an optimal subset of traits associated with the risk locus. CPBayes is based on a spike and slab prior and is implemented by Markov chain Monte Carlo (MCMC) technique Gibbs sampling.</p>
-<p>This R-package consists of four main functions:</p>
+<p>Simultaneous analysis of genetic associations with multiple phenotypes may reveal shared genetic susceptibility across traits (pleiotropy). CPBayes is a Bayesian meta analysis method for studying cross-phenotype genetic associations. It uses summary-level data across multiple phenotypes to simultaneously measure the evidence of aggregate-level pleiotropic association and estimate an optimal subset of traits associated with the risk locus. CPBayes is based on a spike and slab prior and is implemented by Markov chain Monte Carlo (MCMC) technique Gibbs sampling.</p>
+<p>This R-package consists of five main functions:</p>
 <ol style="list-style-type: decimal">
-<li>cpbayes_uncor: This function implements CPBayes for uncorrelated summary statistics. The summary statistics across traits/studies are uncorrelated when the studies have no overlapping subject.</li>
-<li>cpbayes_cor: This function implements CPBayes for correlated summary statistics. The summary statistics across traits/studies are correlated when the studies have overlapping subjects or the phenotypes were measured in a cohort study.</li>
-<li>post_summaries: This function summarizes the MCMC data produced by the two main functions cpbayes_uncor or cpbayes_cor listed above. It computes additional summaries to provide a better insight into a pleiotropic signal. It works in the same way for both cpbayes_uncor and cpbayes_cor.</li>
-<li>estimate_corln: This function computes an approximate correlation matrix of the beta-hat vector for multiple overlapping case-control studies or a cohort study using the sample-overlap matrices.</li>
+<li>cpbayes_uncor: It implements CPBayes for uncorrelated summary statistics. The summary statistics across traits/studies are uncorrelated when the studies have no overlapping subject.</li>
+<li>cpbayes_cor: It implements CPBayes for correlated summary statistics. The summary statistics across traits/studies are correlated when the studies have overlapping subjects or the phenotypes were measured in a cohort study.</li>
+<li>post_summaries: It summarizes the MCMC data produced by cpbayes_uncor or cpbayes_cor. It computes additional summaries to provide a better insight into a pleiotropic signal. It works in the same way for both cpbayes_uncor and cpbayes_cor.</li>
+<li>forest_cpbayes: It creates a forest plot presenting the pleiotropy result obtained by cpbayes_uncor or cpbayes_cor. It works in the same way for both cpbayes_uncor and cpbayes_cor.</li>
+<li>estimate_corln: It computes an approximate correlation matrix of the beta-hat vector for multiple overlapping case-control studies using the sample-overlap matrices.</li>
 </ol>
 </div>
 <div id="installation" class="section level1">
@@ -91,8 +92,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;CPBayes&quot;</span>)
 <span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)</code></pre></div>
 </div>
-<div id="an-example-demonstrating-how-to-run-cpbayes-for-uncorrelated-summary-statistics." class="section level1">
-<h1>An example demonstrating how to run CPBayes for uncorrelated summary statistics.</h1>
+<div id="how-to-run-cpbayes-for-uncorrelated-summary-statistics." class="section level1">
+<h1>How to run CPBayes for uncorrelated summary statistics.</h1>
 <p>Get the path to the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)
 <span class="co"># Load the beta hat vector</span>
@@ -123,7 +124,7 @@ SNP1
 result &lt;-<span class="st"> </span><span class="kw">cpbayes_uncor</span>(BetaHat, SE, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1)
 ## log10_BF: 11.39 
 ## subset:  Disease7 Disease9 Disease10</code></pre></div>
-<p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_uncor in the CPBayes manual). After running cpbayes_uncor, it prints the log10(Bayes factor) (denoted as log10_BF) and the subset of associated/non-null traits (denoted as subset) produced by CPBayes. The Bayes factor evaluates the overall pleiotropic association and the subset of non-null traits are the most important phenotypes that underlie the pleiotropic signal. However, the printed outputs are only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str function (as shown below).</p>
+<p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_uncor in the CPBayes manual). After running cpbayes_uncor, it prints the log10(Bayes factor) (denoted as log10_BF) and the subset of associated/non-null traits (denoted as subset) produced by CPBayes. The Bayes factor evaluates the overall pleiotropic association and the subset of non-null traits are the most important phenotypes that underlie the pleiotropic signal. However, the printed outputs are only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str() function (as shown below).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Overall summary of the primary results produced by cpbayes_uncor.</span>
 <span class="kw">str</span>(result)
 ## List of 7
@@ -134,17 +135,19 @@ result &lt;-<span class="st"> </span><span class="kw">cpbayes_uncor</span>(BetaH
 ##  $ important_traits:'data.frame':    3 obs. of  2 variables:
 ##   ..$ traits: chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;
 ##   ..$ PPAj  : num [1:3] 1 0.962 0.6
-##  $ auxi_data       :List of 6
+##  $ auxi_data       :List of 8
 ##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
 ##   ..$ K              : int 10
 ##   ..$ mcmc.samplesize: num 10000
 ##   ..$ PPAj           : num [1:10] 0.029 0.0191 0.0214 0.0159 0.0232 ...
 ##   ..$ Z.data         : num [1:10000, 1:10] 0 0 0 0 0 0 0 0 0 1 ...
 ##   ..$ sim.beta       : num [1:10000, 1:10] -0.000319 0.010188 0.012115 -0.003118 0.003075 ...
-##  $ runtime         :Class 'proc_time'  Named num [1:5] 1.695 0.048 1.749 0.002 0.003
+##   ..$ betahat        : num [1:10] 0.03402 -0.01988 -0.01088 -0.00941 0.02195 ...
+##   ..$ se             : num [1:10] 0.0274 0.0274 0.0275 0.0275 0.0275 ...
+##  $ runtime         :Class 'proc_time'  Named num [1:5] 1.804 0.014 1.822 0 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</code></pre></div>
 <p>result$variantName returns the name of the genetic variant specified by the user. Here, it is ‘rs1234’. result$log10_BF provides the log10(Bayes factor) (discussed above). result$PPNA provides the posterior probability of null association which is another measure of the aggregate-level pleiotropic association. result$subset provides the optimal subset of associated/non-null traits selected by CPBayes. Thus, for the example data, CPBayes produced a log10(Bayes factor) of 11.4, PPNA of 3.99*10^(-15), and selected Disease7, Disease9, and Disease10 as associated/non-null. A detailed interpretation of all the outputs are described in the Value section of cpbayes_uncor in the CPBayes manual.</p>
-<p>The post_summaries function provides important insights into an obseved pleiotropic signal, e.g., the direction of associations, posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
+<p>The post_summaries function provides important insights into an obseved pleiotropic signal, e.g., the direction of associations, trait-specific posterior probability of associations (PPAj), posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Post summary of the MCMC data produced by cpbayes_uncor.</span>
 PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  
 <span class="kw">str</span>(PleioSumm)
@@ -178,9 +181,15 @@ PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(r
 ##   ..$ lCl         : num [1:10] 0.986 0.978 0.979 0.98 0.984 ...
 ##   ..$ uCl         : num [1:10] 1.03 1.02 1.02 1.02 1.02 ...</code></pre></div>
 <p>So we have to pass the list ‘result’ returned by cpbayes_uncor as the first argument and the ‘level’ as the second argument into the post_summaries function. If ‘level’ is not specified, the default value is 0.05. Note that post_summaries computes (1-level)% credible interval of the unknown true genetic effect (beta/odds ratio) on each trait. It estimates the direction of association with the important traits, the vector of trait-specific posterior probability of association (PPAj), etc. For detailed description of different outputs provided by this function, please see the Value section of post_summaries in the CPBayes manual.</p>
+<p>Next we run the forest_cpbayes function to create a forest plot that presents the pleiotropy result produced by cpbayes_uncor.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Forest plot for the pleiotropy result obtained by cpbayes_uncor.</span>
+<span class="kw">forest_cpbayes</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)
+## quartz_off_screen 
+##                 2</code></pre></div>
+<p>Similarly as for the post_summaries function, we need to pass the same list `result’ returned by cpbayes_uncor as the first argument into the function. Second argument is the level whose default value is 0.05. In the forest plot, (1-level)% confidence interval of the beta/log(odds ratio) parameter is plotted for each trait. For more details, please see the section of forest_cpbayes function in the CPBayes manual.</p>
 </div>
-<div id="an-example-demonstrating-how-to-run-cpbayes-for-correlated-summary-statistics." class="section level1">
-<h1>An example demonstrating how to run CPBayes for correlated summary statistics.</h1>
+<div id="how-to-run-cpbayes-for-correlated-summary-statistics." class="section level1">
+<h1>How to run CPBayes for correlated summary statistics.</h1>
 <p>Next we demonstrate how to run CPBayes for correlated summary statistics. Get the path to the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the beta-hat vector</span>
 datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cBetaHat.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
@@ -222,12 +231,12 @@ cor
 ##  [8,] 0.4117647 1.0000000 0.4117647 0.4117647
 ##  [9,] 0.4117647 0.4117647 1.0000000 0.4117647
 ## [10,] 0.4117647 0.4117647 0.4117647 1.0000000</code></pre></div>
-<p>The correlation matrix of the beta-hat vector (cBetaHat) is given by ‘cor’ which we estimated by employing the estimate_corln function (demonstrated later in this tutorial) using the sample-overlap matrix (explained later in this tutorial). Next we run the correlated version of CPBayes for this example data.</p>
+<p>The correlation matrix of the beta-hat vector (cBetaHat) is given by ‘cor’ which we estimated by employing the estimate_corln function (demonstrated later in this tutorial) using the sample-overlap matrices (explained later in this tutorial). Next we run the correlated version of CPBayes for this example data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run the correlated version of CPBayes.</span>
 result &lt;-<span class="st"> </span><span class="kw">cpbayes_cor</span>(cBetaHat, cSE, cor, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1)
 ## log10_BF: 18.87 
 ## subset:  Disease9 Disease10</code></pre></div>
-<p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_cor in the CPBayes manual). After running cpbayes_cor, it prints the log10(Bayes factor) (denoted as log10_BF) and the subset of non-null/associated traits (denoted as subset) produced by CPBayes. The Bayes factor evaluates the overall pleiotropic association and the subset of non-null traits are the most important phenotypes that underlie the pleiotropic signal. However, the printed outputs are only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str function (as shown below).</p>
+<p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_cor in the CPBayes manual). After running cpbayes_cor, it prints the log10(Bayes factor) (denoted as log10_BF) and the subset of non-null/associated traits (denoted as subset) produced by CPBayes. The Bayes factor evaluates the overall pleiotropic association and the subset of non-null traits are the most important phenotypes that underlie the pleiotropic signal. However, the printed outputs are only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str() function (as shown below).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Overall summary of the primary results produced by cpbayes_cor.</span>
 <span class="kw">str</span>(result)
 ## List of 8
@@ -238,18 +247,20 @@ result &lt;-<span class="st"> </span><span class="kw">cpbayes_cor</span>(cBetaHa
 ##  $ important_traits:'data.frame':    2 obs. of  2 variables:
 ##   ..$ traits: chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
 ##   ..$ PPAj  : num [1:2] 0.91 1
-##  $ auxi_data       :List of 6
+##  $ auxi_data       :List of 8
 ##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
 ##   ..$ K              : int 10
 ##   ..$ mcmc.samplesize: num 10000
 ##   ..$ PPAj           : num [1:10] 0.0109 0.0105 0.0369 0.0069 0.0119 ...
 ##   ..$ Z.data         : num [1:10000, 1:10] 0 0 0 0 0 0 0 0 0 0 ...
 ##   ..$ sim.beta       : num [1:10000, 1:10] -0.00604 -0.01855 0.00852 0.00693 -0.00578 ...
+##   ..$ betahat        : num [1:10] -0.0422 -0.0356 -0.0581 -0.026 -0.0144 ...
+##   ..$ se             : num [1:10] 0.0239 0.0239 0.024 0.024 0.0238 ...
 ##  $ uncor_use       : chr &quot;No&quot;
-##  $ runtime         :Class 'proc_time'  Named num [1:5] 4.285 0.086 4.378 0.004 0.004
+##  $ runtime         :Class 'proc_time'  Named num [1:5] 4.53 0.047 4.581 0 0
 ##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</code></pre></div>
 <p>result$variantName returns the name of the genetic variant specified by the user. Here, it is ‘rs1234’. result$log10_BF provides the log10(Bayes factor) (discussed above). result$PPNA provides the posterior probability of null association which is another measure of the aggregate-level pleiotropic association. result$subset provides the optimal subset of associated traits selected by CPBayes. Thus, for the example data, CPBayes produced a log10(Bayes factor) of 18.9, PPNA of 1.31*10^(-22), and selected Disease9 and Disease10 as associated/non-null. A detailed interpretation of all the outputs are described in the Value section of cpbayes_cor in the CPBayes manual.</p>
-<p>The post_summaries function provides important insights into an observed pleiotropic signal, e.g., the direction of associations, posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
+<p>The post_summaries function provides important insights into an observed pleiotropic signal, e.g., the direction of associations, trait-specific posterior probability of associations (PPAj), posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Post summary of the MCMC data produced by cpbayes_cor.</span>
 PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  
 <span class="kw">str</span>(PleioSumm)
@@ -282,11 +293,17 @@ PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(r
 ##   ..$ poste_median: num [1:10] 0.996 0.997 0.992 0.999 1.002 ...
 ##   ..$ lCl         : num [1:10] 0.978 0.979 0.968 0.982 0.984 ...
 ##   ..$ uCl         : num [1:10] 1.01 1.01 1.01 1.02 1.02 ...</code></pre></div>
-<p>post_summaries works exactly in the same way for both cpbayes_cor and cpbayes_uncor. Thus, we need to pass the list ‘result’ returned by cpbayes_cor as the first argument and ‘level’ as the second argument into the post_summaries function. If ‘level’ is not specified, the default value is 0.05. Note that post_summaries computes (1-level)% credible interval for the unknown true genetic effect (beta/odds ratio) on each trait. It provides the direction of the association with the important traits, the vector of trait-specific posterior probability of association (PPAj), etc. For detailed description of different outputs provided by post_summaries, please see the Value section of post_summaries in the CPBayes manual.</p>
+<p>Note that, post_summaries works exactly in the same way for both cpbayes_cor and cpbayes_uncor. Thus, we need to pass the list ‘result’ returned by cpbayes_cor as the first argument and ‘level’ as the second argument. If ‘level’ is not specified, the default value is 0.05. Note that post_summaries computes (1-level)% credible interval of the unknown true genetic effect (beta/odds ratio) on each trait. It provides the direction of association with the important traits, the vector of trait-specific posterior probability of association (PPAj), etc. For detailed description of different outputs provided by post_summaries, please see the Value section of post_summaries in the CPBayes manual.</p>
+<p>Next we run the forest_cpbayes function to create a forest plot that presents the pleiotropy result produced by cpbayes_cor.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Forest plot for the pleiotropy result obtained by cpbayes_cor.</span>
+<span class="kw">forest_cpbayes</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)
+## quartz_off_screen 
+##                 2</code></pre></div>
+<p>Note that, forest_cpbayes works exactly in the same way for both cpbayes_cor and cpbayes_uncor. Thus, we need to pass the list `result’ returned by cpbayes_cor as the first argument into the function. Second argument is the level for which the default value is 0.05. In the forest plot, (1-level)% confidence interval of the beta/log(odds ratio) parameter is plotted for each trait. For more details, please see the section of forest_cpbayes function in the CPBayes manual.</p>
 </div>
-<div id="an-example-demonstrating-how-to-run-estimate_corln" class="section level1">
-<h1>An example demonstrating how to run estimate_corln</h1>
-<p>The function estimate_corln estimates the correlation matrix of the beta-hat vector for multiple overlapping case-control studies or a cohort study using the sample-overlap matrices which describe the number of cases or controls shared between studies/traits, and the number of subjects who are case for one study/trait but control for another study/trait.</p>
+<div id="how-to-run-estimate_corln." class="section level1">
+<h1>How to run estimate_corln.</h1>
+<p>The function estimate_corln estimates the correlation matrix of the beta-hat vector for multiple overlapping case-control studies using the sample-overlap matrices which describe the number of cases or controls shared between studies/traits, and the number of subjects who are case for one study/trait but control for another study/trait. For a cohort study, the phenotypic correlation matrix should be a reasonable substitute of this correlation matrix.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Example data of sample-overlap matrices</span>
 SampleOverlapMatrixFile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SampleOverlapMatrix.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
 <span class="kw">load</span>(SampleOverlapMatrixFile)
@@ -327,9 +344,9 @@ cor
 ## trait3 0.057231953 0.016018131 1.00000000  0.155476792  0.01211052
 ## trait4 0.002505875 0.002744961 0.15547679  1.000000000 -0.01824859
 ## trait5 0.089894085 0.078491585 0.01211052 -0.018248589  1.00000000</code></pre></div>
-<p>The function estimate_corln computes an approximate correlation matrix of the correlated beta-hat vector obtained from multiple overlapping case-control studies or a cohort study. Note that for a cohort study, such overlap between cases and controls is natural due to measuring phenotypes on the same group of individuals. This approximation of correlation structure using the sample-overlap matrices is more accurate when none of the diseases/traits is associated with the environmental covariates in the study. While demonstrating cpbayes_cor, we used simulated data for 10 overlapping case-control studies with each study having a distinct set of 7000 cases and a common set of 10000 controls shared across all the studies. We used the estimate_corln function to estimate the correlation matrix of the correlated beta-hat vector using the sample-overlap matrix.</p>
-<p><strong><em>Important note on the estimation of correlation structure of correlated beta-hat vector:</em></strong> In general, environmental covariates are expected to be present in a study and associated with the phenotypes of interest. Hence the above approximation of the correlation matrix may not be completely accurate. So, in presence of environmental covariates, we recommend an alternative strategy to estimate the correlation matrix using the genome-wide summary statistics data across traits as follows. First, extract all the SNPs for each of which the trait-specific univariate association p-value across all the traits are &gt; 0.1. The trait-specific univariate association p-values can be obtained based on the beta-hat and standard error for each trait. Each of the SNPs selected in this way is either weakly or not associated with any of the phenotypes (null SNP). Next, select a set of independent null SNPs from the initial set of null SNPs by using a threshold of r^2 &lt; 0.01 (r: the correlation between the genotypes at a pair of SNPs). Finally, compute the correlation matrix of the effect estimates (beta-hat vector) as the sample correlation matrix of the beta-hat vector across all the selected independent null SNPs. This strategy is more general and applicable to a cohort study or multiple overlapping studies for binary or quantitative traits with arbitrary distributions. Misspecification of the correlation structure can affect the results produced by CPBayes to some extent. Hence, if genome-wide summary statistics data across traits is available, we recommend to use this alternative strategy to estimate the correlation matrix of the beta-hat vector.</p>
-<p>See our paper for more details: Arunabha Majumdar, Tanushree Haldar, Sourabh Bhattacharya, John Witte. An efficient Bayesian meta-analysis approach for studying cross-phenotype genetic associations (submitted). Available at: <a href="http://biorxiv.org/content/early/2017/01/18/101543" class="uri">http://biorxiv.org/content/early/2017/01/18/101543</a>.</p>
+<p>The function estimate_corln computes an approximate correlation matrix of the correlated beta-hat vector obtained from multiple overlapping case-control studies using the sample-overlap matrices. Note that for a cohort study, the phenotypic correlation matrix should be a reasonable substitute of this correlation matrix. These approximations of the correlation structure are accurate when none of the diseases/traits is associated with the environmental covariates and genetic variant. While demonstrating cpbayes_cor, we used simulated data for 10 overlapping case-control studies with each study having a distinct set of 7000 cases and a common set of 10000 controls shared across all the studies. We used the estimate_corln function to estimate the correlation matrix of the correlated beta-hat vector using the sample-overlap matrices.</p>
+<p><strong><em>Important note on the estimation of correlation structure of correlated beta-hat vector:</em></strong> In general, environmental covariates are expected to be present in a study and associated with the phenotypes of interest. Also, a small proportion of genome-wide genetic variants are expected to be associated. Hence the above approximations of the correlation matrix may not be accurate. So in general, we recommend an alternative strategy to estimate the correlation matrix using the genome-wide summary statistics data across traits as follows. First, extract all the SNPs for each of which the trait-specific univariate association p-value across all the traits are &gt; 0.1. The trait-specific univariate association p-values are obtained using the beta-hat and standard error for each trait. Each of the SNPs selected in this way is either weakly or not associated with any of the phenotypes (null SNP). Next, select a set of independent null SNPs from the initial set of null SNPs by using a threshold of r^2 &lt; 0.01 (r: the correlation between the genotypes at a pair of SNPs). In the absence of in-sample linkage disequilibrium (LD) information, one can use the reference panel LD information for this screening. Finally, compute the correlation matrix of the effect estimates (beta-hat vector) as the sample correlation matrix of the beta-hat vector across all the selected independent null SNPs. This strategy is more general and applicable to a cohort study or multiple overlapping studies for binary or quantitative traits with arbitrary distributions. It is also useful when the beta-hat vector for multiple non-overlapping studies become correlated due to genetically related individuals across studies. Misspecification of the correlation structure can affect the results produced by CPBayes to some extent. Hence, if genome-wide summary statistics data across traits is available, we highly recommend to use this alternative strategy to estimate the correlation matrix of the beta-hat vector.</p>
+<p>See our paper for more details: Arunabha Majumdar, Tanushree Haldar, Sourabh Bhattacharya, John Witte. An efficient Bayesian meta-analysis approach for studying cross-phenotype genetic associations (submitted), available at: <a href="http://biorxiv.org/content/early/2017/01/18/101543" class="uri">http://biorxiv.org/content/early/2017/01/18/101543</a>.</p>
 </div>
 
 

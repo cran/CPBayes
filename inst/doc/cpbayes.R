@@ -35,6 +35,10 @@ str(result)
 PleioSumm <- post_summaries(result, level = 0.05)  
 str(PleioSumm)
 
+## ----forest_plot, collapse= TRUE-----------------------------------------
+# Forest plot for the pleiotropy result obtained by cpbayes_uncor.
+forest_cpbayes(result, level = 0.05)
+
 ## ----load_cBeta, collapse = TRUE-----------------------------------------
 # Load the beta-hat vector
 datafile <- system.file("extdata", "cBetaHat.rda", package = "CPBayes")
@@ -65,6 +69,10 @@ str(result)
 # Post summary of the MCMC data produced by cpbayes_cor.
 PleioSumm <- post_summaries(result, level = 0.05)  
 str(PleioSumm)
+
+## ----forest_plot_cor, collapse= TRUE-------------------------------------
+# Forest plot for the pleiotropy result obtained by cpbayes_cor.
+forest_cpbayes(result, level = 0.05)
 
 ## ----corln_estimation_example, collapse = TRUE---------------------------
 # Example data of sample-overlap matrices
