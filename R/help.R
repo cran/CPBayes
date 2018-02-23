@@ -111,12 +111,19 @@ print_result <- function(input)
   #cat("RESULT ::", "\n")
   #gvar <- paste(" genetic_variant", input$genetic_variant, sep = " : ")
   #cat(gvar, "\t")
-  BF <- input$log10_BF
-  BF <- round(BF, digits = 2)
-  BF <- paste("log10_BF", BF, sep = ": ")
-  cat(BF, "\n")
-  #ppna <- paste("PPNA", input$PPNA, sep = " : ")
-  #cat(ppna, "\n")
+  #BF <- input$log10_BF
+  #BF <- round(BF, digits = 2)
+  #BF <- paste("log10_BF", BF, sep = ": ")
+  #cat(BF, "\n")
+
+  PPNA <- input$locFDR
+  x <- PPNA
+  count <- 0
+  while(x < 1){ x <- 10*x; count <- count+1 }
+  PPNA <- round(PPNA, digits = count+1)
+
+  locFDR <- paste("locFDR", PPNA, sep = " : ")
+  cat(locFDR, "\n")
   cat("subset:", " ")
   if(length(input$subset) != 0)
     cat(input$subset, "\n")

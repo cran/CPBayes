@@ -24,7 +24,7 @@ SNP1
 
 ## ----uncor_example, collapse = TRUE--------------------------------------
 # Run the uncorrelated version of CPBayes.
-result <- cpbayes_uncor(BetaHat, SE, Phenotypes = traitNames, Variant = SNP1)
+result <- cpbayes_uncor(BetaHat, SE, Phenotypes = traitNames, Variant = SNP1, MCMCiter = 10000, Burnin = 2000)
 
 ## ----result_structure, collapse= TRUE------------------------------------
 # Overall summary of the primary results produced by cpbayes_uncor.
@@ -59,7 +59,7 @@ cor
 
 ## ----cor_example, collapse = TRUE----------------------------------------
 # Run the correlated version of CPBayes.
-result <- cpbayes_cor(cBetaHat, cSE, cor, Phenotypes = traitNames, Variant = SNP1)
+result <- cpbayes_cor(cBetaHat, cSE, cor, Phenotypes = traitNames, Variant = SNP1, MCMCiter = 10000, Burnin = 2000)
 
 ## ----result_structure_cor, collapse= TRUE--------------------------------
 # Overall summary of the primary results produced by cpbayes_cor.

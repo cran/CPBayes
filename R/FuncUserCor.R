@@ -19,33 +19,33 @@
 #'  that presents the prior distribution of non-null effects is
 #'  updated at each MCMC iteration in a range (MinSlabVar -- MaxSlabVar) (see next). If FALSE, 
 #'   it is fixed at (MinSlabVar + MaxSlabVar)/2. Default is TRUE.
-#' @param MinSlabVar A numeric value greater than 0.1 providing the minimum value of the
-#'  variance of the slab distribution. Default is 0.8.
+#' @param MinSlabVar A numeric value greater than 0.01 providing the minimum value of the
+#'  variance of the slab distribution. Default is 0.6.
 #' @param MaxSlabVar A numeric value smaller than 10.0 providing the maximum value of the
-#'  variance of the slab distribution. Default is 1.2. **Note that,
+#'  variance of the slab distribution. Default is 1.0. **Note that,
 #'  a smaller value of the slab variance will increase the sensitivity of CPBayes while selecting the optimal
 #'   subset of associated traits but at the expense of lower specificity. Hence the slab variance
 #'   parameter in CPBayes is inversely related to the level of false discovery rate (FDR) in a frequentist
 #'   FDR controlling procedure. For a specific dataset, an user
 #'    can experiment different choices of these three arguments: UpdateSlabVar, MinSlabVar, and MaxSlabVar.
-#' @param MCMCiter A positive integer greater than or equal to 10,000 providing the total number of
+#' @param MCMCiter A positive integer greater than or equal to 7,000 providing the total number of
 #'  iterations in the MCMC. Default is 20,000.
-#' @param Burnin A positive integer greater than or equal to 5,000 providing the burn in period 
-#' in the MCMC. Default is 10,000. Note that the MCMC sample size (MCMCiter - Burnin) must be at least 5,000.
+#' @param Burnin A positive integer greater than or equal to 2,000 providing the burn in period 
+#' in the MCMC. Default is 5,000. Note that the MCMC sample size (MCMCiter - Burnin) must be at least 5,000.
 #' @return The output produced by \code{\link{cpbayes_cor}} is a list which consists of various components.
 #'    \item{variantName}{It is the name of the genetic variant provided by the user. If 
 #'    not specified by the user, default name is `Variant'.} 
 #'    \item{log10_BF}{It provides the log10(Bayes factor) produced by CPBayes that measures the
 #'     evidence of the overall pleiotropic association.}
-#'    \item{PPNA}{It provides the posterior probability of null association produced by
-#'     CPBayes (a Bayesian analog of the p-value) which is another measure of the evidence
+#'    \item{locFDR}{It provides the local false discovery rate (posterior probability of null association) produced by
+#'     CPBayes (a Bayesian analog of the p-value) which is a measure of the evidence
 #'      of aggregate-level pleiotropic association. Bayes factor is adjusted for prior odds, but
-#'      PPNA is solely a function of the posterior odds. PPNA can sometimes be small
-#'      indicating an association, but log10_BF may not indicate an association. Hence, always check both log10_BF and PPNA.}
+#'      locFDR is solely a function of the posterior odds. locFDR can sometimes be small
+#'      indicating an association, but log10_BF may not indicate an association. Hence, always check both log10_BF and locFDR.}
 #'    \item{subset}{It provides the optimal subset of associated/non-null traits selected by
 #'     CPBayes. It is NULL if no phenotype is selected.}
 #'    \item{important_traits}{It provides the traits which yield a trait-specific posterior 
-#'    probability of association (PPAj) > 25\%. Even if a phenotype is not 
+#'    probability of association (PPAj) > 20\%. Even if a phenotype is not 
 #'    selected in the optimal subset of non-null traits, it can produce a non-negligible
 #'     value of PPAj. Note that, `important_traits' is expected to include the traits already
 #'      contained in `subset'. It provides both the name of the important traits and their
@@ -69,10 +69,7 @@
 #'    \item{runtime}{It provides the runtime (in seconds) taken by \code{\link{cpbayes_cor}}. It will help the user to
 #'     plan the whole analysis.}
 #'    
-#' @references Arunabha Majumdar, Tanushree Haldar, Sourabh Bhattacharya, John Witte.
-#'  An efficient Bayesian meta-analysis 
-#'  approach for studying cross-phenotype genetic associations (submitted), available
-#'  at: http://biorxiv.org/content/early/2017/01/18/101543.
+#' @references Majumdar A, Haldar T, Bhattacharya S, Witte JS (2018) An efficient Bayesian meta analysis approach for studying cross-phenotype genetic associations. PLoS Genet 14(2): e1007139.
 #'    
 #' @seealso  \code{\link{estimate_corln}}, \code{\link{post_summaries}}, \code{\link{forest_cpbayes}}, \code{\link{cpbayes_uncor}}
 #' 
@@ -91,7 +88,7 @@
 #' 
 #' 
 #' @export
-cpbayes_cor <- function(BetaHat, SE, Corln, Phenotypes, Variant, UpdateSlabVar = TRUE, MinSlabVar = 0.8, MaxSlabVar = 1.2, MCMCiter = 20000, Burnin = 10000)
+cpbayes_cor <- function(BetaHat, SE, Corln, Phenotypes, Variant, UpdateSlabVar = TRUE, MinSlabVar = 0.6, MaxSlabVar = 1.0, MCMCiter = 20000, Burnin = 5000)
 {
   
   UpdateDE <- UpdateSlabVar
@@ -141,9 +138,9 @@ cpbayes_cor <- function(BetaHat, SE, Corln, Phenotypes, Variant, UpdateSlabVar =
     }
 
     # Argument 7 & 8:: Minimum and maximum value of slab variance
-    MinSlabVarDefault <- 0.8
-    MaxSlabVarDefault <- 1.2
-    MinSlabVarBound <- 0.1
+    MinSlabVarDefault <- 0.6
+    MaxSlabVarDefault <- 1.0
+    MinSlabVarBound <- 0.01
     MaxSlabVarBound <- 10.0
     
     # Check whether argument 7 is a vector of length 1
@@ -205,14 +202,14 @@ cpbayes_cor <- function(BetaHat, SE, Corln, Phenotypes, Variant, UpdateSlabVar =
       MCMCiter <- mcmcDefault
     }
     # Check whether argument 9 is more than 10000
-    if(MCMCiter < 10000)
+    if(MCMCiter < 7000)
     {
-      warning("MCMCiter should be at least 10000 (default option used).", call. = FALSE)
+      warning("MCMCiter should be at least 7000 (default option used).", call. = FALSE)
       MCMCiter <- mcmcDefault
     }
     
     # Argument 10 :: Burnin
-    BurninDefault <- 10000
+    BurninDefault <- 5000
     # Check whether argument 10 is a vector of length 1
     if(!is.vector(Burnin) || (length(Burnin) != 1))
     {
@@ -225,10 +222,10 @@ cpbayes_cor <- function(BetaHat, SE, Corln, Phenotypes, Variant, UpdateSlabVar =
       warning("Burnin not provided as integer (default option used).", call. = FALSE)
       Burnin <- BurninDefault
     }
-    # Check whether argument 10 is more than 5000
-    if(Burnin < 5000)
+    # Check whether argument 10 is more than 2000
+    if(Burnin < 2000)
     {
-      warning("Burnin should be at least 5000 (default option used).", call. = FALSE)
+      warning("Burnin should be at least 2000 (default option used).", call. = FALSE)
       Burnin <- BurninDefault
     }
     

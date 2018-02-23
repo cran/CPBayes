@@ -1,17 +1,18 @@
 Package: CPBayes
 Title: Bayesian Meta Analysis for Studying Cross-Phenotype Genetic
         Associations
-Version: 0.2.0
-Date: 2017-04-5
+Version: 0.3.0
+Date: 2018-02-22
 Author: Arunabha Majumdar <statgen.arunabha@gmail.com> [aut, cre],
-  Tanushree Haldar <tanushree.haldar@gmail.com> [aut],
-  John Witte [ctb]
+    Tanushree Haldar <tanushree.haldar@gmail.com> [aut],
+    John Witte [ctb]
 Maintainer: Arunabha Majumdar <statgen.arunabha@gmail.com>
 Description: A Bayesian meta-analysis method for studying cross-phenotype
-  genetic associations. It uses summary-level data across multiple phenotypes to
-  simultaneously measure the evidence of aggregate-level pleiotropic association and
-  estimate an optimal subset of traits associated with the risk locus. CPBayes is based
-  on a spike and slab prior and is implemented by Markov chain Monte Carlo technique Gibbs sampling.
+    genetic associations. It uses summary-level data across multiple phenotypes to
+    simultaneously measure the evidence of aggregate-level pleiotropic association
+    and estimate an optimal subset of traits associated with the risk locus. CPBayes
+    is based on a spike and slab prior and is implemented by Markov chain Monte
+    Carlo technique Gibbs sampling.
 Depends: R (>= 3.2.0)
 License: GPL-3
 LazyData: TRUE
@@ -22,6 +23,6 @@ Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 Imports: MASS, stats, forestplot, grDevices
 NeedsCompilation: no
-Packaged: 2017-04-06 01:12:12 UTC; tanushree
+Packaged: 2018-02-23 07:41:58 UTC; Arunabha
 Repository: CRAN
-Date/Publication: 2017-04-06 09:37:07 UTC
+Date/Publication: 2018-02-23 07:50:54 UTC
