@@ -115,7 +115,7 @@
 #'          It helps to better explain an observed pleiotropic signal.}
 #'     \item{traitNames}{It returns the name of all the phenotypes specified by the user.
 #'      Default is trait1, trait2, ... , traitK.}
-#'     \item{PPAj}{Data frame provaiding the trait-specific posterior probability of
+#'     \item{PPAj}{Data frame providing the trait-specific posterior probability of
 #'      association for all the phenotypes.}
 #'     \item{poste_summary_beta}{Data frame providing the posterior summary of the
 #'      unknown true genetic effect (beta) on each trait. It gives posterior mean,
@@ -266,7 +266,7 @@
 #' traitNames <- paste("Disease", 1:10, sep = "")
 #' SNP1 <- "rs1234"
 #' result <- cpbayes_uncor(BetaHat, SE, Phenotypes = traitNames, Variant = SNP1)
-#' forest_cpbayes(result, level = 0.05)
+#' \dontrun{forest_cpbayes(result, level = 0.05)}
 #'
 #' @export
 forest_cpbayes <- function(mcmc_output, level = 0.05, PPAj_cutoff = 0.01){

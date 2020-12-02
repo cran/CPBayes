@@ -1,65 +1,386 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Arunabha Majumdar, Tanushree Haldar, John Witte" />
 
-<meta name="date" content="2019-01-12" />
+<meta name="date" content="2020-12-01" />
 
 <title>CPBayes (Bayesian meta analysis for studying cross-phenotype genetic associations) package</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      code.sourceCode > span { display: inline-block; line-height: 1.25; }
+  code.sourceCode > span { color: inherit; text-decoration: inherit; }
+  code.sourceCode > span:empty { height: 1.2em; }
+  .sourceCode { overflow: visible; }
+  code.sourceCode { white-space: pre; position: relative; }
+  div.sourceCode { margin: 1em 0; }
+  pre.sourceCode { margin: 0; }
+  @media screen {
+  div.sourceCode { overflow: auto; }
+  }
+  @media print {
+  code.sourceCode { white-space: pre-wrap; }
+  code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+  }
+  pre.numberSource code
+    { counter-reset: source-line 0; }
+  pre.numberSource code > span
+    { position: relative; left: -4em; counter-increment: source-line; }
+  pre.numberSource code > span > a:first-child::before
+    { content: counter(source-line);
+      position: relative; left: -1em; text-align: right; vertical-align: baseline;
+      border: none; display: inline-block;
+      -webkit-touch-callout: none; -webkit-user-select: none;
+      -khtml-user-select: none; -moz-user-select: none;
+      -ms-user-select: none; user-select: none;
+      padding: 0 4px; width: 4em;
+      color: #aaaaaa;
+    }
+  pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+  div.sourceCode
+    {   }
+  @media screen {
+  code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+  }
+  code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+  code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+  code span.at { color: #7d9029; } /* Attribute */
+  code span.bn { color: #40a070; } /* BaseN */
+  code span.bu { } /* BuiltIn */
+  code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+  code span.ch { color: #4070a0; } /* Char */
+  code span.cn { color: #880000; } /* Constant */
+  code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+  code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+  code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+  code span.dt { color: #902000; } /* DataType */
+  code span.dv { color: #40a070; } /* DecVal */
+  code span.er { color: #ff0000; font-weight: bold; } /* Error */
+  code span.ex { } /* Extension */
+  code span.fl { color: #40a070; } /* Float */
+  code span.fu { color: #06287e; } /* Function */
+  code span.im { } /* Import */
+  code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+  code span.op { color: #666666; } /* Operator */
+  code span.ot { color: #007020; } /* Other */
+  code span.pp { color: #bc7a00; } /* Preprocessor */
+  code span.sc { color: #4070a0; } /* SpecialChar */
+  code span.ss { color: #bb6688; } /* SpecialString */
+  code span.st { color: #4070a0; } /* String */
+  code span.va { color: #19177c; } /* Variable */
+  code span.vs { color: #4070a0; } /* VerbatimString */
+  code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -69,8 +390,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">CPBayes (Bayesian meta analysis for studying cross-phenotype genetic associations) package</h1>
-<h4 class="author"><em>Arunabha Majumdar, Tanushree Haldar, John Witte</em></h4>
-<h4 class="date"><em>2019-01-12</em></h4>
+<h4 class="author">Arunabha Majumdar, Tanushree Haldar, John Witte</h4>
+<h4 class="date">2020-12-01</h4>
 
 
 
@@ -91,288 +412,287 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="installation" class="section level1">
 <h1>Installation</h1>
 <p>You can install CPBayes from CRAN.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;CPBayes&quot;</span>)
-<span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">install.packages</span>(<span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)</span></code></pre></div>
 </div>
 <div id="how-to-run-cpbayes-for-uncorrelated-summary-statistics." class="section level1">
 <h1>How to run CPBayes for uncorrelated summary statistics.</h1>
-<p>Get the path to the data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)
-<span class="co"># Load the beta hat vector</span>
-BetaHatfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;BetaHat.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
-<span class="kw">load</span>(BetaHatfile)
-BetaHat
-##  [1]  0.03402285 -0.01987781 -0.01088476 -0.00940975  0.02195188
-##  [6] -0.01728955  0.14180403  0.06979527 -0.11721340 -0.09231879</code></pre></div>
+<p>Load the example data.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(<span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># Load the beta hat vector</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>BetaHatfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;BetaHat.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">load</span>(BetaHatfile)</span>
+<span id="cb2-5"><a href="#cb2-5"></a>BetaHat</span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">##  [1]  0.03402285 -0.01987781 -0.01088476 -0.00940975  0.02195188 -0.01728955</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">##  [7]  0.14180403  0.06979527 -0.11721340 -0.09231879</span></span></code></pre></div>
 <p>BetaHat contains an example data of the main genetic effect (beta/log odds ratio) estimates for a single nucleotide polymorphism (SNP) obtained from 10 separate case-control studies for 10 different diseases. In each case-control study comprising a distinct set of 7000 cases and 10000 controls, we fit a logistic regression of the case-control status on the genotype coded as the minor allele count for all the individuals in the sample. One can also include various covariates, such as, age, gender, principal components (PCs) of ancestries in the logistic regression. From each logistic regression for a disease, we obtain the estimate of the main genetic association parameter (beta/logodds ratio) along with the corresponding standard error. Since the studies do not have any overlapping subject, beta-hat across the diseases are uncorrelated.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the standard error vector</span>
-SEfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SE.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
-<span class="kw">load</span>(SEfile)
-SE
-##  [1] 0.02736746 0.02741876 0.02749038 0.02747637 0.02749800 0.02753650
-##  [7] 0.02731022 0.02714103 0.02786046 0.02783711</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Load the standard error vector</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>SEfile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SE.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">load</span>(SEfile)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>SE</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">##  [1] 0.02736746 0.02741876 0.02749038 0.02747637 0.02749800 0.02753650</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">##  [7] 0.02731022 0.02714103 0.02786046 0.02783711</span></span></code></pre></div>
 <p>SE contains the standard errors corresponding to the above beta hat vector across 10 separate case-control studies.</p>
 <p>Next we specify the name of the diseases/phenotypes and the genetic variant.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Specify the name of the traits and the genetic variant.</span>
-traitNames &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Disease&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
-SNP1 &lt;-<span class="st"> &quot;rs1234&quot;</span>
-traitNames
-##  [1] &quot;Disease1&quot;  &quot;Disease2&quot;  &quot;Disease3&quot;  &quot;Disease4&quot;  &quot;Disease5&quot; 
-##  [6] &quot;Disease6&quot;  &quot;Disease7&quot;  &quot;Disease8&quot;  &quot;Disease9&quot;  &quot;Disease10&quot;
-SNP1
-## [1] &quot;rs1234&quot;</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Specify the name of the traits and the genetic variant.</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>traitNames &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Disease&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>SNP1 &lt;-<span class="st"> &quot;rs1234&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>traitNames</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">##  [1] &quot;Disease1&quot;  &quot;Disease2&quot;  &quot;Disease3&quot;  &quot;Disease4&quot;  &quot;Disease5&quot;  &quot;Disease6&quot; </span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">##  [7] &quot;Disease7&quot;  &quot;Disease8&quot;  &quot;Disease9&quot;  &quot;Disease10&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>SNP1</span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">## [1] &quot;rs1234&quot;</span></span></code></pre></div>
 <p>Now, since the studies are non-overlapping, the summary statistics across traits are uncorrelated. Here we run the analytic_locFDR_BF_uncor function for this example data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Run analytic_locFDR_BF_uncor function to analytically compute locFDR and log10BF for uncorrelated summary statistics.</span>
-result &lt;-<span class="st"> </span><span class="kw">analytic_locFDR_BF_uncor</span>(BetaHat, SE)
-<span class="kw">str</span>(result)
-## List of 2
-##  $ locFDR  : num 3.43e-06
-##  $ log10_BF: num 3.93</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#Run analytic_locFDR_BF_uncor function to analytically compute locFDR and log10BF for uncorrelated summary statistics.</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>result &lt;-<span class="st"> </span><span class="kw">analytic_locFDR_BF_uncor</span>(BetaHat, SE)</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">str</span>(result)</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">## List of 2</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">##  $ locFDR  : num 3.43e-06</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">##  $ log10_BF: num 3.93</span></span></code></pre></div>
 <p>So, locFDR [result$locFDR] was analytically computed as 3.43*10^(-6) and log10(Bayes factor) [result$log10_BF] was estimated as 3.93 indicating an aggregate-level pleiotropic association. While analytically computing locFDR (BF), a fixed value of slab variance is considered.</p>
 <p>Next we implement CPBayes for this example data. Since the studies are non-overlapping, the summary statistics across traits are uncorrelated. Hence we run the cpbayes_uncor function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run the uncorrelated version of CPBayes (based on MCMC).</span>
-result &lt;-<span class="st"> </span><span class="kw">cpbayes_uncor</span>(BetaHat, SE, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1, <span class="dt">MCMCiter =</span> <span class="dv">10000</span>, <span class="dt">Burnin =</span> <span class="dv">2000</span>)
-## Important traits with trait-specific posterior prob of assoc: 
-##      traits PPAj
-## 1  Disease7 1.00
-## 2  Disease8 0.21
-## 3  Disease9 0.98
-## 4 Disease10 0.58</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Run the uncorrelated version of CPBayes (based on MCMC).</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>result &lt;-<span class="st"> </span><span class="kw">cpbayes_uncor</span>(BetaHat, SE, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1, <span class="dt">MCMCiter =</span> <span class="dv">5500</span>, <span class="dt">Burnin =</span> <span class="dv">500</span>)</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">## Important traits with trait-specific posterior prob of assoc: </span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">##      traits PPAj</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">## 1  Disease7 1.00</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">## 2  Disease8 0.23</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">## 3  Disease9 0.97</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">## 4 Disease10 0.56</span></span></code></pre></div>
 <p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_uncor in the CPBayes manual). After running cpbayes_uncor, it prints the list of important traits for which the trait-specific posterior probability of association (PPAj) &gt; 20%. However, the printed output is only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str() function (as shown below).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Overall summary of the primary results produced by cpbayes_uncor.</span>
-<span class="kw">str</span>(result)
-## List of 7
-##  $ variantName     : chr &quot;rs1234&quot;
-##  $ log10_BF        : num 8.63
-##  $ locFDR          : num 6.88e-11
-##  $ subset          : chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;
-##  $ important_traits:'data.frame':    4 obs. of  2 variables:
-##   ..$ traits: chr [1:4] &quot;Disease7&quot; &quot;Disease8&quot; &quot;Disease9&quot; &quot;Disease10&quot;
-##   ..$ PPAj  : num [1:4] 1 0.212 0.98 0.585
-##  $ auxi_data       :List of 8
-##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ K              : int 10
-##   ..$ mcmc.samplesize: num 8000
-##   ..$ PPAj           : num [1:10] 0.0245 0.0184 0.0154 0.0145 0.0204 ...
-##   ..$ Z.data         : num [1:8000, 1:10] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..$ sim.beta       : num [1:8000, 1:10] -0.0092 -0.01444 0.00879 0.00488 0.00687 ...
-##   ..$ betahat        : num [1:10] 0.03402 -0.01988 -0.01088 -0.00941 0.02195 ...
-##   ..$ se             : num [1:10] 0.0274 0.0274 0.0275 0.0275 0.0275 ...
-##  $ runtime         :Class 'proc_time'  Named num [1:5] 0.673 0.005 0.679 0 0
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Overall summary of the primary results produced by cpbayes_uncor.</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">str</span>(result)</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">## List of 7</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">##  $ variantName     : chr &quot;rs1234&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co">##  $ log10_BF        : num 8.43</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">##  $ locFDR          : num 1.09e-10</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co">##  $ subset          : chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co">##  $ important_traits:&#39;data.frame&#39;:    4 obs. of  2 variables:</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">##   ..$ traits: chr [1:4] &quot;Disease7&quot; &quot;Disease8&quot; &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">##   ..$ PPAj  : num [1:4] 1 0.227 0.971 0.565</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">##  $ auxi_data       :List of 8</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">##   ..$ K              : int 10</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">##   ..$ mcmc.samplesize: num 5000</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">##   ..$ PPAj           : num [1:10] 0.0334 0.0188 0.0142 0.0132 0.0178 ...</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">##   ..$ Z.data         : num [1:5000, 1:10] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">##   ..$ sim.beta       : num [1:5000, 1:10] 0.007478 -0.00191 -0.003954 0.00095 -0.000388 ...</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">##   ..$ betahat        : num [1:10] 0.03402 -0.01988 -0.01088 -0.00941 0.02195 ...</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">##   ..$ se             : num [1:10] 0.0274 0.0274 0.0275 0.0275 0.0275 ...</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="co">##  $ runtime         : &#39;proc_time&#39; Named num [1:5] 0.328 0.02 0.352 0 0</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="co">##   ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</span></span></code></pre></div>
 <p>Here, result$variantName returns the name of the genetic variant specified by the user. Here, it is ‘rs1234’. Estimated based on the MCMC posterior sample, result$log10_BF provides the log10(Bayes factor) and result$locFDR provides the local false discovery rate (posterior probability of null association) evaluating the aggregate-level pleiotropic association. These values were different from that obtained by the analytical version (above). The main reason is that the locFDR (log10BF) obtained by cpbayes_uncor() function are estimated based on MCMC sample and a range of slab variance is considered. We recommend using the locFDR (log10BF) value obtained from the analytical version. Next, result$subset provides the optimal subset of associated/non-null traits selected by CPBayes. CPBayes selected Disease7, Disease9, and Disease10 as associated/non-null. It also gives a list of important traits (important_traits) comprising phenotypes having PPAj &gt; 20%. Even if a phenotype is not selected in the optimal subset of non-null traits, it can produce a non-negligible value of trait-specific posterior probability of association (PPAj) and can be promising to be pleiotropic. For example, Disease8 had a PPAj of 21% and was listed in important_traits, but was not included in the optimal subset. A detailed interpretation of all the outputs are described in the Value section of cpbayes_uncor in the CPBayes manual.</p>
 <p>The post_summaries function provides important insights into an obseved pleiotropic signal, e.g. the direction of associations, trait-specific posterior probability of associations (PPAj), posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Post summary of the MCMC data produced by cpbayes_uncor.</span>
-PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  
-<span class="kw">str</span>(PleioSumm)
-## List of 9
-##  $ variantName       : chr &quot;rs1234&quot;
-##  $ log10_BF          : num 8.63
-##  $ locFDR            : num 6.88e-11
-##  $ subset            :'data.frame':  3 obs. of  3 variables:
-##   ..$ traits   : chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;
-##   ..$ PPAj     : num [1:3] 1 0.98 0.585
-##   ..$ direction: chr [1:3] &quot;positive&quot; &quot;negative&quot; &quot;negative&quot;
-##  $ important_traits  :'data.frame':  4 obs. of  3 variables:
-##   ..$ traits   : chr [1:4] &quot;Disease7&quot; &quot;Disease8&quot; &quot;Disease9&quot; &quot;Disease10&quot;
-##   ..$ PPAj     : num [1:4] 1 0.212 0.98 0.585
-##   ..$ direction: chr [1:4] &quot;positive&quot; &quot;positive&quot; &quot;negative&quot; &quot;negative&quot;
-##  $ traitNames        : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##  $ PPAj              :'data.frame':  10 obs. of  2 variables:
-##   ..$ traits: chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ PPAj  : num [1:10] 0.0245 0.0184 0.0154 0.0145 0.0204 ...
-##  $ poste_summary_beta:'data.frame':  10 obs. of  6 variables:
-##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ poste_mean  : num [1:10] 0.00478 -0.00279 -0.00139 -0.00143 0.00303 ...
-##   ..$ poste_median: num [1:10] 0.00439 -0.00247 -0.00125 -0.00127 0.00281 ...
-##   ..$ poste_se    : num [1:10] 0.01108 0.01045 0.01001 0.00995 0.01056 ...
-##   ..$ lCl         : num [1:10] -0.0142 -0.0232 -0.0203 -0.0209 -0.0161 ...
-##   ..$ uCl         : num [1:10] 0.0256 0.0165 0.0175 0.0173 0.0231 ...
-##  $ poste_summary_OR  :'data.frame':  10 obs. of  5 variables:
-##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ poste_mean  : num [1:10] 1.005 0.997 0.999 0.999 1.003 ...
-##   ..$ poste_median: num [1:10] 1.004 0.998 0.999 0.999 1.003 ...
-##   ..$ lCl         : num [1:10] 0.986 0.977 0.98 0.979 0.984 ...
-##   ..$ uCl         : num [1:10] 1.03 1.02 1.02 1.02 1.02 ...</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Post summary of the MCMC data produced by cpbayes_uncor.</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  </span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="kw">str</span>(PleioSumm)</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">## List of 9</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">##  $ variantName       : chr &quot;rs1234&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">##  $ log10_BF          : num 8.43</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">##  $ locFDR            : num 1.09e-10</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">##  $ subset            :&#39;data.frame&#39;:  3 obs. of  3 variables:</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">##   ..$ traits   : chr [1:3] &quot;Disease7&quot; &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">##   ..$ PPAj     : num [1:3] 1 0.971 0.565</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">##   ..$ direction: chr [1:3] &quot;positive&quot; &quot;negative&quot; &quot;negative&quot;</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">##  $ important_traits  :&#39;data.frame&#39;:  4 obs. of  3 variables:</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">##   ..$ traits   : chr [1:4] &quot;Disease7&quot; &quot;Disease8&quot; &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co">##   ..$ PPAj     : num [1:4] 1 0.227 0.971 0.565</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">##   ..$ direction: chr [1:4] &quot;positive&quot; &quot;positive&quot; &quot;negative&quot; &quot;negative&quot;</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="co">##  $ traitNames        : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="co">##  $ PPAj              :&#39;data.frame&#39;:  10 obs. of  2 variables:</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">##   ..$ traits: chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="co">##   ..$ PPAj  : num [1:10] 0.0334 0.0188 0.0142 0.0132 0.0178 ...</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="co">##  $ poste_summary_beta:&#39;data.frame&#39;:  10 obs. of  6 variables:</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="co">##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="co">##   ..$ poste_mean  : num [1:10] 0.00491 -0.00269 -0.00151 -0.00137 0.00306 ...</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="co">##   ..$ poste_median: num [1:10] 0.00423 -0.00231 -0.00133 -0.00134 0.00275 ...</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="co">##   ..$ poste_se    : num [1:10] 0.01189 0.01047 0.00984 0.0099 0.01051 ...</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="co">##   ..$ lCl         : num [1:10] -0.0143 -0.0226 -0.0203 -0.0207 -0.0157 ...</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a><span class="co">##   ..$ uCl         : num [1:10] 0.0275 0.0168 0.017 0.0177 0.0235 ...</span></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="co">##  $ poste_summary_OR  :&#39;data.frame&#39;:  10 obs. of  5 variables:</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="co">##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a><span class="co">##   ..$ poste_mean  : num [1:10] 1.005 0.997 0.999 0.999 1.003 ...</span></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="co">##   ..$ poste_median: num [1:10] 1.004 0.998 0.999 0.999 1.003 ...</span></span>
+<span id="cb8-31"><a href="#cb8-31"></a><span class="co">##   ..$ lCl         : num [1:10] 0.986 0.978 0.98 0.979 0.984 ...</span></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="co">##   ..$ uCl         : num [1:10] 1.03 1.02 1.02 1.02 1.02 ...</span></span></code></pre></div>
 <p>So we have to pass the list ‘result’ returned by cpbayes_uncor as the first argument and the ‘level’ as the second argument into the post_summaries function. If ‘level’ is not specified, the default value is 0.05. Note that post_summaries computes (1-level)% credible interval of the unknown true genetic effect (beta/odds ratio) on each trait. It estimates the direction of association with the important traits, the vector of trait-specific posterior probability of association (PPAj), etc. For detailed description of different outputs provided by this function, see the Value section of post_summaries in the CPBayes manual.</p>
 <p>Next we run the forest_cpbayes function to create a forest plot that presents the pleiotropy result produced by cpbayes_uncor.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Forest plot for the pleiotropy result obtained by cpbayes_uncor.</span>
-<span class="kw">forest_cpbayes</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)
-## quartz_off_screen 
-##                 2</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Forest plot for the pleiotropy result obtained by cpbayes_uncor.</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">forest_cpbayes</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)</span></code></pre></div>
 <p>Similarly as for the post_summaries function, we need to pass the same list `result’ returned by cpbayes_uncor as the first argument into the function. Second argument is the level whose default value is 0.05. In the forest plot, (1-level)% confidence interval of the beta/log odds ratio parameter is plotted for each trait. For more details, please see the section of forest_cpbayes function in the CPBayes manual.</p>
 </div>
 <div id="how-to-run-cpbayes-for-correlated-summary-statistics." class="section level1">
 <h1>How to run CPBayes for correlated summary statistics.</h1>
 <p>Next we demonstrate how to run CPBayes for correlated summary statistics. Get the path to the data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the beta-hat vector</span>
-datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cBetaHat.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
-<span class="kw">load</span>(datafile)
-cBetaHat
-##  [1] -0.042216290 -0.035624411 -0.058063641 -0.026037581 -0.014434543
-##  [6] -0.004717336 -0.043771014 -0.025293739  0.059845798 -0.177518725</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Load the beta-hat vector</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cBetaHat.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="kw">load</span>(datafile)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>cBetaHat</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="co">##  [1] -0.042216290 -0.035624411 -0.058063641 -0.026037581 -0.014434543</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co">##  [6] -0.004717336 -0.043771014 -0.025293739  0.059845798 -0.177518725</span></span></code></pre></div>
 <p>Here, ‘c’ in cBetaHat stands for correlated case. cBetaHat contains an example data of the main genetic association parameter (beta/log odds ratio) estimates for a SNP across 10 overlapping case-control studies for 10 different diseases. Each of the 10 studies has a distinct set of 7000 cases and a common set of 10000 controls shared across all the studies. In each case-control study, we fit a logistic regression of the case-control status on the genotype coded as the minor allele count for all the individuals in the sample. One can also include various covariates, such as, age, gender, principal components (PCs) of ancestries in the logistic regression. From each logistic regression for a disease, we obtain the estimate of the main genetic effect (beta/log odds ratio) along with the corresponding standard error. Since the studies have overlapping subjects, beta-hat across the diseases are correlated.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the standard error vector</span>
-datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cSE.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
-<span class="kw">load</span>(datafile)
-cSE
-##  [1] 0.02386863 0.02389768 0.02404311 0.02395724 0.02383974 0.02376651
-##  [7] 0.02402079 0.02392416 0.02377087 0.02446383</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Load the standard error vector</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cSE.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="kw">load</span>(datafile)</span>
+<span id="cb11-4"><a href="#cb11-4"></a>cSE</span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="co">##  [1] 0.02386863 0.02389768 0.02404311 0.02395724 0.02383974 0.02376651</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="co">##  [7] 0.02402079 0.02392416 0.02377087 0.02446383</span></span></code></pre></div>
 <p>cSE contains the standard errors corresponding to the above beta hat vector across 10 overlapping case-control studies.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the correlation matrix of the beta-hat vector (cBetaHat)</span>
-datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cor.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
-<span class="kw">load</span>(datafile)
-cor
-##            [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
-##  [1,] 1.0000000 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
-##  [2,] 0.4117647 1.0000000 0.4117647 0.4117647 0.4117647 0.4117647
-##  [3,] 0.4117647 0.4117647 1.0000000 0.4117647 0.4117647 0.4117647
-##  [4,] 0.4117647 0.4117647 0.4117647 1.0000000 0.4117647 0.4117647
-##  [5,] 0.4117647 0.4117647 0.4117647 0.4117647 1.0000000 0.4117647
-##  [6,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 1.0000000
-##  [7,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
-##  [8,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
-##  [9,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
-## [10,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647
-##            [,7]      [,8]      [,9]     [,10]
-##  [1,] 0.4117647 0.4117647 0.4117647 0.4117647
-##  [2,] 0.4117647 0.4117647 0.4117647 0.4117647
-##  [3,] 0.4117647 0.4117647 0.4117647 0.4117647
-##  [4,] 0.4117647 0.4117647 0.4117647 0.4117647
-##  [5,] 0.4117647 0.4117647 0.4117647 0.4117647
-##  [6,] 0.4117647 0.4117647 0.4117647 0.4117647
-##  [7,] 1.0000000 0.4117647 0.4117647 0.4117647
-##  [8,] 0.4117647 1.0000000 0.4117647 0.4117647
-##  [9,] 0.4117647 0.4117647 1.0000000 0.4117647
-## [10,] 0.4117647 0.4117647 0.4117647 1.0000000</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Load the correlation matrix of the beta-hat vector (cBetaHat)</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>datafile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;cor.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="kw">load</span>(datafile)</span>
+<span id="cb12-4"><a href="#cb12-4"></a>cor</span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="co">##            [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="co">##  [1,] 1.0000000 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="co">##  [2,] 0.4117647 1.0000000 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="co">##  [3,] 0.4117647 0.4117647 1.0000000 0.4117647 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="co">##  [4,] 0.4117647 0.4117647 0.4117647 1.0000000 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="co">##  [5,] 0.4117647 0.4117647 0.4117647 0.4117647 1.0000000 0.4117647 0.4117647</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="co">##  [6,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 1.0000000 0.4117647</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="co">##  [7,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 1.0000000</span></span>
+<span id="cb12-13"><a href="#cb12-13"></a><span class="co">##  [8,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="co">##  [9,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="co">## [10,] 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="co">##            [,8]      [,9]     [,10]</span></span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="co">##  [1,] 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a><span class="co">##  [2,] 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-19"><a href="#cb12-19"></a><span class="co">##  [3,] 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-20"><a href="#cb12-20"></a><span class="co">##  [4,] 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-21"><a href="#cb12-21"></a><span class="co">##  [5,] 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-22"><a href="#cb12-22"></a><span class="co">##  [6,] 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-23"><a href="#cb12-23"></a><span class="co">##  [7,] 0.4117647 0.4117647 0.4117647</span></span>
+<span id="cb12-24"><a href="#cb12-24"></a><span class="co">##  [8,] 1.0000000 0.4117647 0.4117647</span></span>
+<span id="cb12-25"><a href="#cb12-25"></a><span class="co">##  [9,] 0.4117647 1.0000000 0.4117647</span></span>
+<span id="cb12-26"><a href="#cb12-26"></a><span class="co">## [10,] 0.4117647 0.4117647 1.0000000</span></span></code></pre></div>
 <p>Since the summary statistics across traits are correlated, we run the the analytic_locFDR_BF_cor function for this example data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run analytic_locFDR_BF_cor function to analytically compute locFDR and log10BF for correlated summary statistics.</span>
-result &lt;-<span class="st"> </span><span class="kw">analytic_locFDR_BF_cor</span>(cBetaHat, cSE, cor)
-<span class="kw">str</span>(result)
-## List of 2
-##  $ locFDR  : num 3.54e-10
-##  $ log10_BF: num 9.18</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Run analytic_locFDR_BF_cor function to analytically compute locFDR and log10BF for correlated summary statistics.</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>result &lt;-<span class="st"> </span><span class="kw">analytic_locFDR_BF_cor</span>(cBetaHat, cSE, cor)</span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="kw">str</span>(result)</span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="co">## List of 2</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="co">##  $ locFDR  : num 3.54e-10</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="co">##  $ log10_BF: num 9.18</span></span></code></pre></div>
 <p>So the locFDR [result$locFDR] was analytically computed as 3.54*10^(-10) and log10(Bayes factor) [result$log10_BF] was estimated as 9.18 indicating an aggregate-level pleiotropic association.</p>
 <p>The correlation matrix of the beta-hat vector (cBetaHat) is given by ‘cor’ which we estimated by employing the estimate_corln function (demonstrated later in this tutorial) using the sample-overlap matrices (explained later in this tutorial). Next we run the correlated version of CPBayes based on MCMC for this example data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run the correlated version of CPBayes.</span>
-result &lt;-<span class="st"> </span><span class="kw">cpbayes_cor</span>(cBetaHat, cSE, cor, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1, <span class="dt">MCMCiter =</span> <span class="dv">10000</span>, <span class="dt">Burnin =</span> <span class="dv">2000</span>)
-## Important traits with trait-specific posterior prob of assoc: 
-##      traits PPAj
-## 1  Disease9 0.83
-## 2 Disease10 1.00</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Run the correlated version of CPBayes.</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>result &lt;-<span class="st"> </span><span class="kw">cpbayes_cor</span>(cBetaHat, cSE, cor, <span class="dt">Phenotypes =</span> traitNames, <span class="dt">Variant =</span> SNP1, <span class="dt">MCMCiter =</span> <span class="dv">5500</span>, <span class="dt">Burnin =</span> <span class="dv">500</span>)</span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co">## Important traits with trait-specific posterior prob of assoc: </span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co">##      traits PPAj</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="co">## 1  Disease9 0.88</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="co">## 2 Disease10 1.00</span></span></code></pre></div>
 <p>There are more options of arguments to pass into the function (see the Arguments section of cpbayes_cor in the CPBayes manual). After running cpbayes_cor, it prints the list of important traits for which the trait-specific posterior probability of association (PPAj) &gt; 20%. However, the printed outputs are only a part of ‘result’ which is a list that constitutes of various components. An overall summary of ‘result’ can be seen by using the str() function (as shown below).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Overall summary of the primary results produced by cpbayes_cor.</span>
-<span class="kw">str</span>(result)
-## List of 8
-##  $ variantName     : chr &quot;rs1234&quot;
-##  $ log10_BF        : num 22
-##  $ locFDR          : num 5.7e-23
-##  $ subset          : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
-##  $ important_traits:'data.frame':    2 obs. of  2 variables:
-##   ..$ traits: chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
-##   ..$ PPAj  : num [1:2] 0.832 1
-##  $ auxi_data       :List of 8
-##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ K              : int 10
-##   ..$ mcmc.samplesize: num 8000
-##   ..$ PPAj           : num [1:10] 0.00675 0.00575 0.0225 0.00575 0.00662 ...
-##   ..$ Z.data         : num [1:8000, 1:10] 0 0 0 0 0 0 0 0 0 0 ...
-##   ..$ sim.beta       : num [1:8000, 1:10] -0.00891 0.00332 -0.01279 0.0017 -0.01093 ...
-##   ..$ betahat        : num [1:10] -0.0422 -0.0356 -0.0581 -0.026 -0.0144 ...
-##   ..$ se             : num [1:10] 0.0239 0.0239 0.024 0.024 0.0238 ...
-##  $ uncor_use       : chr &quot;No&quot;
-##  $ runtime         :Class 'proc_time'  Named num [1:5] 2.03 0.01 2.04 0 0
-##   .. ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Overall summary of the primary results produced by cpbayes_cor.</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="kw">str</span>(result)</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="co">## List of 8</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="co">##  $ variantName     : chr &quot;rs1234&quot;</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="co">##  $ log10_BF        : num 15.2</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="co">##  $ locFDR          : num 3.1e-16</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="co">##  $ subset          : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a><span class="co">##  $ important_traits:&#39;data.frame&#39;:    2 obs. of  2 variables:</span></span>
+<span id="cb15-9"><a href="#cb15-9"></a><span class="co">##   ..$ traits: chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb15-10"><a href="#cb15-10"></a><span class="co">##   ..$ PPAj  : num [1:2] 0.876 1</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a><span class="co">##  $ auxi_data       :List of 8</span></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="co">##   ..$ traitNames     : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a><span class="co">##   ..$ K              : int 10</span></span>
+<span id="cb15-14"><a href="#cb15-14"></a><span class="co">##   ..$ mcmc.samplesize: num 5000</span></span>
+<span id="cb15-15"><a href="#cb15-15"></a><span class="co">##   ..$ PPAj           : num [1:10] 0.007 0.0072 0.023 0.0052 0.0054 ...</span></span>
+<span id="cb15-16"><a href="#cb15-16"></a><span class="co">##   ..$ Z.data         : num [1:5000, 1:10] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span id="cb15-17"><a href="#cb15-17"></a><span class="co">##   ..$ sim.beta       : num [1:5000, 1:10] -0.01081 -0.00519 -0.0075 -0.00895 0.00928 ...</span></span>
+<span id="cb15-18"><a href="#cb15-18"></a><span class="co">##   ..$ betahat        : num [1:10] -0.0422 -0.0356 -0.0581 -0.026 -0.0144 ...</span></span>
+<span id="cb15-19"><a href="#cb15-19"></a><span class="co">##   ..$ se             : num [1:10] 0.0239 0.0239 0.024 0.024 0.0238 ...</span></span>
+<span id="cb15-20"><a href="#cb15-20"></a><span class="co">##  $ uncor_use       : chr &quot;No&quot;</span></span>
+<span id="cb15-21"><a href="#cb15-21"></a><span class="co">##  $ runtime         : &#39;proc_time&#39; Named num [1:5] 0.884 0.013 0.907 0 0</span></span>
+<span id="cb15-22"><a href="#cb15-22"></a><span class="co">##   ..- attr(*, &quot;names&quot;)= chr [1:5] &quot;user.self&quot; &quot;sys.self&quot; &quot;elapsed&quot; &quot;user.child&quot; ...</span></span></code></pre></div>
 <p>Here, result$variantName returns the name of the genetic variant specified by the user. Here, it is ‘rs1234’. Estimated based on the MCMC sample, result$log10_BF provides the log10(Bayes factor) and result$locFDR provides the local false discovery rate (posterior probability of null association) measuring the evidence of aggregate-level pleiotropic association. Again, these values were different from that obtained by the analytical version. The main reason is that the locFDR (log10BF) obtained by cpbayes_cor() function are estimated based on MCMC sample and a range of slab variance is considered. We recommend using the locFDR (log10BF) value obtained from the analytical version. However, for large number of traits (say &gt; 25), analytic_locFDR_BF_cor may be slow to run. Next, result$subset provides the optimal subset of associated traits selected by CPBayes. A detailed interpretation of all the outputs are described in the Value section of cpbayes_cor in the CPBayes manual.</p>
 <p>The post_summaries function provides important insights into an observed pleiotropic signal, e.g., the direction of associations, trait-specific posterior probability of associations (PPAj), posterior mean/median and 95% credible interval (Bayesian analog of the confidence interval) of the unknown true genetic effect (beta/odds ratio) on each trait, etc.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Post summary of the MCMC data produced by cpbayes_cor.</span>
-PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  
-<span class="kw">str</span>(PleioSumm)
-## List of 9
-##  $ variantName       : chr &quot;rs1234&quot;
-##  $ log10_BF          : num 22
-##  $ locFDR            : num 5.7e-23
-##  $ subset            :'data.frame':  2 obs. of  3 variables:
-##   ..$ traits   : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
-##   ..$ PPAj     : num [1:2] 0.832 1
-##   ..$ direction: chr [1:2] &quot;positive&quot; &quot;negative&quot;
-##  $ important_traits  :'data.frame':  2 obs. of  3 variables:
-##   ..$ traits   : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;
-##   ..$ PPAj     : num [1:2] 0.832 1
-##   ..$ direction: chr [1:2] &quot;positive&quot; &quot;negative&quot;
-##  $ traitNames        : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##  $ PPAj              :'data.frame':  10 obs. of  2 variables:
-##   ..$ traits: chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ PPAj  : num [1:10] 0.00675 0.00575 0.0225 0.00575 0.00662 ...
-##  $ poste_summary_beta:'data.frame':  10 obs. of  6 variables:
-##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ poste_mean  : num [1:10] -0.004172 -0.002698 -0.008308 -0.000432 0.002356 ...
-##   ..$ poste_median: num [1:10] -0.003998 -0.002659 -0.007927 -0.000228 0.002339 ...
-##   ..$ poste_se    : num [1:10] 0.00909 0.00904 0.01035 0.00906 0.00907 ...
-##   ..$ lCl         : num [1:10] -0.0222 -0.0203 -0.0282 -0.0183 -0.0151 ...
-##   ..$ uCl         : num [1:10] 0.01357 0.01471 0.00955 0.01729 0.02018 ...
-##  $ poste_summary_OR  :'data.frame':  10 obs. of  5 variables:
-##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...
-##   ..$ poste_mean  : num [1:10] 0.996 0.997 0.992 1 1.002 ...
-##   ..$ poste_median: num [1:10] 0.996 0.997 0.992 1 1.002 ...
-##   ..$ lCl         : num [1:10] 0.978 0.98 0.972 0.982 0.985 ...
-##   ..$ uCl         : num [1:10] 1.01 1.01 1.01 1.02 1.02 ...</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Post summary of the MCMC data produced by cpbayes_cor.</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>PleioSumm &lt;-<span class="st"> </span><span class="kw">post_summaries</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)  </span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="kw">str</span>(PleioSumm)</span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="co">## List of 9</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="co">##  $ variantName       : chr &quot;rs1234&quot;</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="co">##  $ log10_BF          : num 15.2</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="co">##  $ locFDR            : num 3.1e-16</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="co">##  $ subset            :&#39;data.frame&#39;:  2 obs. of  3 variables:</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a><span class="co">##   ..$ traits   : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="co">##   ..$ PPAj     : num [1:2] 0.876 1</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a><span class="co">##   ..$ direction: chr [1:2] &quot;positive&quot; &quot;negative&quot;</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="co">##  $ important_traits  :&#39;data.frame&#39;:  2 obs. of  3 variables:</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a><span class="co">##   ..$ traits   : chr [1:2] &quot;Disease9&quot; &quot;Disease10&quot;</span></span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="co">##   ..$ PPAj     : num [1:2] 0.876 1</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a><span class="co">##   ..$ direction: chr [1:2] &quot;positive&quot; &quot;negative&quot;</span></span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="co">##  $ traitNames        : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a><span class="co">##  $ PPAj              :&#39;data.frame&#39;:  10 obs. of  2 variables:</span></span>
+<span id="cb16-18"><a href="#cb16-18"></a><span class="co">##   ..$ traits: chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a><span class="co">##   ..$ PPAj  : num [1:10] 0.007 0.0072 0.023 0.0052 0.0054 ...</span></span>
+<span id="cb16-20"><a href="#cb16-20"></a><span class="co">##  $ poste_summary_beta:&#39;data.frame&#39;:  10 obs. of  6 variables:</span></span>
+<span id="cb16-21"><a href="#cb16-21"></a><span class="co">##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb16-22"><a href="#cb16-22"></a><span class="co">##   ..$ poste_mean  : num [1:10] -0.004154 -0.00259 -0.008246 -0.000356 0.002304 ...</span></span>
+<span id="cb16-23"><a href="#cb16-23"></a><span class="co">##   ..$ poste_median: num [1:10] -0.004057 -0.002602 -0.00788 -0.000384 0.002297 ...</span></span>
+<span id="cb16-24"><a href="#cb16-24"></a><span class="co">##   ..$ poste_se    : num [1:10] 0.009 0.00895 0.01046 0.00906 0.00899 ...</span></span>
+<span id="cb16-25"><a href="#cb16-25"></a><span class="co">##   ..$ lCl         : num [1:10] -0.022 -0.02 -0.0288 -0.0177 -0.0152 ...</span></span>
+<span id="cb16-26"><a href="#cb16-26"></a><span class="co">##   ..$ uCl         : num [1:10] 0.01364 0.01475 0.00955 0.01771 0.01966 ...</span></span>
+<span id="cb16-27"><a href="#cb16-27"></a><span class="co">##  $ poste_summary_OR  :&#39;data.frame&#39;:  10 obs. of  5 variables:</span></span>
+<span id="cb16-28"><a href="#cb16-28"></a><span class="co">##   ..$ traits      : chr [1:10] &quot;Disease1&quot; &quot;Disease2&quot; &quot;Disease3&quot; &quot;Disease4&quot; ...</span></span>
+<span id="cb16-29"><a href="#cb16-29"></a><span class="co">##   ..$ poste_mean  : num [1:10] 0.996 0.997 0.992 1 1.002 ...</span></span>
+<span id="cb16-30"><a href="#cb16-30"></a><span class="co">##   ..$ poste_median: num [1:10] 0.996 0.997 0.992 1 1.002 ...</span></span>
+<span id="cb16-31"><a href="#cb16-31"></a><span class="co">##   ..$ lCl         : num [1:10] 0.978 0.98 0.972 0.982 0.985 ...</span></span>
+<span id="cb16-32"><a href="#cb16-32"></a><span class="co">##   ..$ uCl         : num [1:10] 1.01 1.01 1.01 1.02 1.02 ...</span></span></code></pre></div>
 <p>Note that, post_summaries works exactly in the same way for both cpbayes_cor and cpbayes_uncor. For detailed description of different outputs provided by post_summaries, see the Value section of post_summaries in the CPBayes manual.</p>
 <p>Next we run the forest_cpbayes function to create a forest plot that presents the pleiotropy result produced by cpbayes_cor.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Forest plot for the pleiotropy result obtained by cpbayes_cor.</span>
-<span class="kw">forest_cpbayes</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)
-## quartz_off_screen 
-##                 2</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># Forest plot for the pleiotropy result obtained by cpbayes_cor.</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="kw">forest_cpbayes</span>(result, <span class="dt">level =</span> <span class="fl">0.05</span>)</span></code></pre></div>
 <p>Note that, forest_cpbayes works exactly in the same way for both cpbayes_cor and cpbayes_uncor. For more details, see the section of forest_cpbayes function in the CPBayes manual.</p>
 </div>
 <div id="how-to-run-estimate_corln." class="section level1">
 <h1>How to run estimate_corln.</h1>
 <p>The function estimate_corln estimates the correlation matrix of the beta-hat vector for multiple overlapping case-control studies using the sample-overlap matrices which describe the number of cases or controls shared between studies/traits, and the number of subjects who are case for one study/trait but control for another study/trait. For a cohort study, the phenotypic correlation matrix should be a reasonable substitute of this correlation matrix.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Example data of sample-overlap matrices</span>
-SampleOverlapMatrixFile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SampleOverlapMatrix.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)
-<span class="kw">load</span>(SampleOverlapMatrixFile)
-SampleOverlapMatrix
-## $n11
-##        trait1 trait2 trait3 trait4 trait5
-## trait1   9048   4647   2985   2835   1812
-## trait2   4647  13565   3873   4245   2419
-## trait3   2985   3873  14681   6285   2044
-## trait4   2835   4245   6285  16697   2059
-## trait5   1812   2419   2044   2059   7121
-## 
-## $n00
-##        trait1 trait2 trait3 trait4 trait5
-## trait1  44683  35765  32987  30821  39374
-## trait2  35765  40166  29358  27714  35464
-## trait3  32987  29358  39050  28638  33973
-## trait4  30821  27714  28638  37034  31972
-## trait5  39374  35464  33973  31972  46610
-## 
-## $n10
-##        trait1 trait2 trait3 trait4 trait5
-## trait1      0   4401   6063   6213   7236
-## trait2   8918      0   9692   9320  11146
-## trait3  11696  10808      0   8396  12637
-## trait4  13862  12452  10412      0  14638
-## trait5   5309   4702   5077   5062      0</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Example data of sample-overlap matrices</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>SampleOverlapMatrixFile &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SampleOverlapMatrix.rda&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CPBayes&quot;</span>)</span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="kw">load</span>(SampleOverlapMatrixFile)</span>
+<span id="cb18-4"><a href="#cb18-4"></a>SampleOverlapMatrix</span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="co">## $n11</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="co">##        trait1 trait2 trait3 trait4 trait5</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a><span class="co">## trait1   9048   4647   2985   2835   1812</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="co">## trait2   4647  13565   3873   4245   2419</span></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="co">## trait3   2985   3873  14681   6285   2044</span></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="co">## trait4   2835   4245   6285  16697   2059</span></span>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="co">## trait5   1812   2419   2044   2059   7121</span></span>
+<span id="cb18-12"><a href="#cb18-12"></a><span class="co">## </span></span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="co">## $n00</span></span>
+<span id="cb18-14"><a href="#cb18-14"></a><span class="co">##        trait1 trait2 trait3 trait4 trait5</span></span>
+<span id="cb18-15"><a href="#cb18-15"></a><span class="co">## trait1  44683  35765  32987  30821  39374</span></span>
+<span id="cb18-16"><a href="#cb18-16"></a><span class="co">## trait2  35765  40166  29358  27714  35464</span></span>
+<span id="cb18-17"><a href="#cb18-17"></a><span class="co">## trait3  32987  29358  39050  28638  33973</span></span>
+<span id="cb18-18"><a href="#cb18-18"></a><span class="co">## trait4  30821  27714  28638  37034  31972</span></span>
+<span id="cb18-19"><a href="#cb18-19"></a><span class="co">## trait5  39374  35464  33973  31972  46610</span></span>
+<span id="cb18-20"><a href="#cb18-20"></a><span class="co">## </span></span>
+<span id="cb18-21"><a href="#cb18-21"></a><span class="co">## $n10</span></span>
+<span id="cb18-22"><a href="#cb18-22"></a><span class="co">##        trait1 trait2 trait3 trait4 trait5</span></span>
+<span id="cb18-23"><a href="#cb18-23"></a><span class="co">## trait1      0   4401   6063   6213   7236</span></span>
+<span id="cb18-24"><a href="#cb18-24"></a><span class="co">## trait2   8918      0   9692   9320  11146</span></span>
+<span id="cb18-25"><a href="#cb18-25"></a><span class="co">## trait3  11696  10808      0   8396  12637</span></span>
+<span id="cb18-26"><a href="#cb18-26"></a><span class="co">## trait4  13862  12452  10412      0  14638</span></span>
+<span id="cb18-27"><a href="#cb18-27"></a><span class="co">## trait5   5309   4702   5077   5062      0</span></span></code></pre></div>
 <p>SampleOverlapMatrix is a list that contains an example of the sample overlap matrices for five different diseases in the Kaiser GERA cohort (a real data). The list constitutes of three matrices as follows. SampleOverlapMatrix$n11 provides the number of cases shared between all possible pairs of studies/traits. SampleOverlapMatrix$n00 provides the number of controls shared between all possible pairs of studies/traits. SampleOverlapMatrix$n10 provides the number of subjects who are case for one study/trait and control for another study/trait. For more detailed explanation, see the Arguments section of estimate_corln in the CPBayes manual.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Estimate the correlation matrix of correlated beta-hat vector</span>
-n11 &lt;-<span class="st"> </span>SampleOverlapMatrix<span class="op">$</span>n11
-n00 &lt;-<span class="st"> </span>SampleOverlapMatrix<span class="op">$</span>n00
-n10 &lt;-<span class="st"> </span>SampleOverlapMatrix<span class="op">$</span>n10
-cor &lt;-<span class="st"> </span><span class="kw">estimate_corln</span>(n11, n00, n10)
-cor
-##             trait1      trait2     trait3       trait4      trait5
-## trait1 1.000000000 0.270490702 0.05723195  0.002505875  0.08989408
-## trait2 0.270490702 1.000000000 0.01601813  0.002744961  0.07849158
-## trait3 0.057231953 0.016018131 1.00000000  0.155476792  0.01211052
-## trait4 0.002505875 0.002744961 0.15547679  1.000000000 -0.01824859
-## trait5 0.089894085 0.078491585 0.01211052 -0.018248589  1.00000000</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># Estimate the correlation matrix of correlated beta-hat vector</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>n11 &lt;-<span class="st"> </span>SampleOverlapMatrix<span class="op">$</span>n11</span>
+<span id="cb19-3"><a href="#cb19-3"></a>n00 &lt;-<span class="st"> </span>SampleOverlapMatrix<span class="op">$</span>n00</span>
+<span id="cb19-4"><a href="#cb19-4"></a>n10 &lt;-<span class="st"> </span>SampleOverlapMatrix<span class="op">$</span>n10</span>
+<span id="cb19-5"><a href="#cb19-5"></a>cor &lt;-<span class="st"> </span><span class="kw">estimate_corln</span>(n11, n00, n10)</span>
+<span id="cb19-6"><a href="#cb19-6"></a>cor</span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="co">##             trait1      trait2     trait3       trait4      trait5</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co">## trait1 1.000000000 0.270490702 0.05723195  0.002505875  0.08989408</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="co">## trait2 0.270490702 1.000000000 0.01601813  0.002744961  0.07849158</span></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co">## trait3 0.057231953 0.016018131 1.00000000  0.155476792  0.01211052</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="co">## trait4 0.002505875 0.002744961 0.15547679  1.000000000 -0.01824859</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="co">## trait5 0.089894085 0.078491585 0.01211052 -0.018248589  1.00000000</span></span></code></pre></div>
 <p>The function estimate_corln computes an approximate correlation matrix of the correlated beta-hat vector obtained from multiple overlapping case-control studies using the sample-overlap matrices. Note that for a cohort study, the phenotypic correlation matrix should be a reasonable substitute of this correlation matrix. These approximations of the correlation structure are accurate when none of the diseases/traits is associated with the environmental covariates and genetic variant. While demonstrating cpbayes_cor, we used simulated data for 10 overlapping case-control studies with each study having a distinct set of 7000 cases and a common set of 10000 controls shared across all the studies. We used the estimate_corln function to estimate the correlation matrix of the correlated beta-hat vector using the sample-overlap matrices.</p>
 <p><strong><em>Important note on the estimation of correlation structure of correlated beta-hat vector:</em></strong> In general, environmental covariates are expected to be present in a study and associated with the phenotypes of interest. Also, a small proportion of genome-wide genetic variants are expected to be associated. Hence the above approximations of the correlation matrix may not be accurate. So in general, we recommend an alternative strategy to estimate the correlation matrix using the genome-wide summary statistics data across traits as follows. First, extract all the SNPs for each of which the trait-specific univariate association p-value across all the traits are &gt; 0.1. The trait-specific univariate association p-values are obtained using the beta-hat and standard error for each trait. Each of the SNPs selected in this way is either weakly or not associated with any of the phenotypes (null SNP). Next, select a set of independent null SNPs from the initial set of null SNPs by using a threshold of r^2 &lt; 0.01 (r: the correlation between the genotypes at a pair of SNPs). In the absence of in-sample linkage disequilibrium (LD) information, one can use the reference panel LD information for this screening. Finally, compute the correlation matrix of the effect estimates (beta-hat vector) as the sample correlation matrix of the beta-hat vector across all the selected independent null SNPs. This strategy is more general and applicable to a cohort study or multiple overlapping studies for binary or quantitative traits with arbitrary distributions. It is also useful when the beta-hat vector for multiple non-overlapping studies become correlated due to genetically related individuals across studies. Misspecification of the correlation structure can affect the results produced by CPBayes to some extent. Hence, if genome-wide summary statistics data across traits is available, we recommend this alternative strategy to estimate the correlation matrix of the beta-hat vector.</p>
 <p>See our paper for more details: Majumdar A, Haldar T, Bhattacharya S, Witte JS (2018) An efficient Bayesian meta analysis approach for studying cross-phenotype genetic associations. PLoS Genet 14(2): e1007139.</p>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
